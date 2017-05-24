@@ -1,7 +1,7 @@
 # Личный проект «Пиксель хантер» [![Build status][travis-image]][travis-url]
 
 * Студент: [Павел Орлов](https://up.htmlacademy.ru/ecmascript/2/user/166811).
-* Наставник: `Неизвестно`.
+* Наставник: [Вячеслав Мостовой](https://htmlacademy.ru/profile/id169172).
 
 ---
 
