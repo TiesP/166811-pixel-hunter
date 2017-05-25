@@ -15,9 +15,9 @@ document.addEventListener(`keydown`, checkKey);
 
 function checkKey(event) {
   if (event.altKey) {
-    if (event.code === `ArrowRight`) {
+    if (event.keyCode === 39) {
       changePage(1);
-    } else if (event.code === `ArrowLeft`) {
+    } else if (event.keyCode === 37) {
       changePage(-1);
     }
   }
