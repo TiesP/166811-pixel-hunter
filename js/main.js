@@ -26,18 +26,18 @@ function checkKey(event) {
 function changePage(step) {
   currentPage = currentPage + step;
   if (currentPage === templates.length) {
-    currentPage = 0;
+    currentPage = templates.length - 1;
+    return;
   }
   if (currentPage === -1) {
-    currentPage = templates.length - 1;
+    currentPage = 0;
+    return;
   }
   showScreenByNumber(currentPage);
 }
 
 function showScreenByNumber(num) {
-  if (templates[num]) {
-    main.innerHTML = templates[num].innerHTML;
-  }
+  main.innerHTML = templates[num].innerHTML;
 }
 
 showScreenByNumber(currentPage);
