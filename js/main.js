@@ -1,16 +1,14 @@
 let currentPage = 1;
 const main = document.querySelector(`main.central`);
-const templatesInOrder = [
+const templates = [
   `greeting`,
   `rules`,
   `game-1`,
   `game-2`,
   `game-3`,
   `stats`
-];
-const templates = Array.from(document.getElementsByTagName(`template`));
-templates.sort((a, b) => {
-  return templatesInOrder.indexOf(a.id) - templatesInOrder.indexOf(b.id);
+].map((id) => {
+  return document.querySelector(`template#${id}`);
 });
 
 document.addEventListener(`keydown`, checkKey);
