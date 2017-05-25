@@ -27,11 +27,11 @@ function checkKey(event) {
 
 function changePage(step) {
   currentPage = currentPage + step;
-  if (currentPage === templatesInOrder.length) {
+  if (currentPage === templates.length) {
     currentPage = 0;
   }
   if (currentPage === -1) {
-    currentPage = templatesInOrder.length - 1;
+    currentPage = templates.length - 1;
   }
   showScreenByNumber(currentPage);
 }
