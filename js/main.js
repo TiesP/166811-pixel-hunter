@@ -1,43 +1,12 @@
-let currentPage = 1;
-const main = document.querySelector(`main.central`);
-const templates = [
-  `greeting`,
-  `rules`,
-  `game-1`,
-  `game-2`,
-  `game-3`,
-  `stats`
-].map((id) => {
-  return document.querySelector(`template#${id}`);
-});
+import { handlerChangePageTemplate, initial } from './utils.js';
+import greeting from './greeting';
+import rules from './rules';
+import gameOne from './game-1';
+import gameTwo from './game-2';
+import gameThree from './game-3';
+import stats from './stats';
 
-document.addEventListener(`keydown`, checkKey);
+const intro = document.querySelector(`.intro__asterisk`);
+intro.addEventListener(`click`, handlerChangePageTemplate(`greeting`));
 
-function checkKey(event) {
-  if (event.altKey) {
-    if (event.keyCode === 39) {
-      changePage(1);
-    } else if (event.keyCode === 37) {
-      changePage(-1);
-    }
-  }
-}
-
-function changePage(step) {
-  currentPage = currentPage + step;
-  if (currentPage === templates.length) {
-    currentPage = templates.length - 1;
-    return;
-  }
-  if (currentPage === -1) {
-    currentPage = 0;
-    return;
-  }
-  showScreenByNumber(currentPage);
-}
-
-function showScreenByNumber(num) {
-  main.innerHTML = templates[num].innerHTML;
-}
-
-showScreenByNumber(currentPage);
+initial({ 'greeting': greeting, 'rules': rules, 'game-1': gameOne, 'game-2': gameTwo, 'game-3': gameThree, 'stats': stats });
