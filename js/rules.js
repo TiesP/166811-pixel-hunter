@@ -1,4 +1,5 @@
-import {getElementFromTemplate, handlerChangePageTemplate, addHandlerBackGreeting} from './utils.js';
+import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
+import gameOne from './game-1';
 
 const moduleRules = getElementFromTemplate(`
   <header class="header">
@@ -38,7 +39,9 @@ const moduleRules = getElementFromTemplate(`
 `);
 
 const rulesButton = moduleRules.querySelector(`.rules__button`);
-rulesButton.addEventListener(`click`, handlerChangePageTemplate(`game-1`));
+rulesButton.addEventListener(`click`, () => {
+  changePageTemplate(gameOne);
+});
 
 const rulesInput = moduleRules.querySelector(`.rules__input`);
 rulesInput.addEventListener(`input`, (event) => {

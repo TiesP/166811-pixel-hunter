@@ -1,4 +1,5 @@
-import {getElementFromTemplate, handlerChangePageTemplate, addHandlerBackGreeting} from './utils.js';
+import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
+import stats from './stats';
 
 const moduleGameTree = getElementFromTemplate(`
   <header class="header">
@@ -57,7 +58,9 @@ const moduleGameTree = getElementFromTemplate(`
 
 const itemsOption = Array.from(moduleGameTree.querySelectorAll(`.game__option`));
 itemsOption.forEach((item) => {
-  item.addEventListener(`click`, handlerChangePageTemplate(`stats`));
+  item.addEventListener(`mousedown`, (e) => {
+    changePageTemplate(stats, e.which);
+  });
 });
 
 export default addHandlerBackGreeting(moduleGameTree);

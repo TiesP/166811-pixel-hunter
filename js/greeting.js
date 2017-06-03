@@ -1,4 +1,5 @@
-import {getElementFromTemplate, handlerChangePageTemplate} from './utils.js';
+import {getElementFromTemplate, changePageTemplate} from './utils.js';
+import rules from './rules';
 
 const moduleGreeting = getElementFromTemplate(`<div class="greeting central--blur">
     <div class="greeting__logo"><img src="img/logo_big.png" width="201" height="89" alt="Pixel Hunter"></div>
@@ -25,6 +26,8 @@ const moduleGreeting = getElementFromTemplate(`<div class="greeting central--blu
   </footer>`);
 
 const greetingContinue = moduleGreeting.querySelector(`.greeting__continue`);
-greetingContinue.addEventListener(`click`, handlerChangePageTemplate(`rules`));
+greetingContinue.addEventListener(`click`, () => {
+  changePageTemplate(rules);
+});
 
 export default moduleGreeting;

@@ -1,31 +1,27 @@
+import greeting from './greeting';
+
 const main = document.querySelector(`main.central`);
-let listModules = {};
 
-export const initial = (list) => {
-  listModules = list;
-};
-
-export const handlerChangePageTemplate = (templateName) => {
-  return (ev) => {
-    changePageTemplate(templateName);
-  };
-};
-
-export const changePageTemplate = (templateName) => {
+export function changePageTemplate(template, which) {
+  if (which && which !== 1) {
+    return;
+  }
   main.innerHTML = ``;
-  main.appendChild(listModules[templateName]);
-};
+  main.appendChild(template);
+}
 
-export const getElementFromTemplate = (text) => {
+export function getElementFromTemplate(text) {
   const node = document.createElement(`div`);
   node.innerHTML = text;
   return node;
-};
+}
 
-export const addHandlerBackGreeting = (curModule) => {
+export function addHandlerBackGreeting(curModule) {
   const itemBack = curModule.querySelector(`.back`);
   if (itemBack) {
-    itemBack.addEventListener(`click`, handlerChangePageTemplate(`greeting`));
+    itemBack.addEventListener(`click`, () => {
+      changePageTemplate(greeting);
+    });
   }
   return curModule;
-};
+}

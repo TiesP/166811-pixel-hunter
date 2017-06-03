@@ -1,4 +1,5 @@
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
+import gameTwo from './game-2';
 
 const moduleGameOne = getElementFromTemplate(`
   <header class="header">
@@ -86,7 +87,7 @@ function checkComplete(e) {
     }
   }
   if (complete) {
-    changePageTemplate(`game-2`);
+    changePageTemplate(gameTwo);
   }
 }
 
