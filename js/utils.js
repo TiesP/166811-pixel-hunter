@@ -35,26 +35,24 @@ export function addHandlerBackGreeting(curModule) {
 }
 
 function getStats(stats) {
-  const result = `
+  return `
   <div class="stats">
     <ul class="stats">
       ${getListStats(stats)}
     </ul>
   </div>
   `;
-  return result;
 }
 
 function getListStats(arr) {
-  const result = arr.reduce((r, res) => {
+  return arr.reduce((r, res) => {
     return r + `<li class="stats__result stats__result--${res}"</li>
     `;
   }, ``);
-  return result;
 }
 
 export function getHeader(level) {
-  const result = `
+  return `
     <header class="header">
       <div class="header__back">
         <span class="back">
@@ -65,7 +63,6 @@ export function getHeader(level) {
       ${getHeaderLevel(level)}
     </header>
   `;
-  return result;
 }
 
 function getHeaderLevel(level) {
@@ -75,7 +72,7 @@ function getHeaderLevel(level) {
     const data = makeData();
     const timer = data[level].timer;
     const lives = data[level].lives;
-    const result = `
+    return `
       <h1 class="game__timer">${timer}</h1>
       <div class="game__lives">
         ${
@@ -90,7 +87,6 @@ function getHeaderLevel(level) {
         }
       </div>
     `;
-    return result;
   }
 }
 
@@ -113,7 +109,7 @@ export function getLevel(level) {
     }
   }
 
-  const result = `
+  return `
      <div class="game">
       <p class="game__task">${title}</p>
       <form class="game__content ${className}">
@@ -122,11 +118,10 @@ export function getLevel(level) {
       ${getStats(stats)}
     </div>
    `;
-  return result;
 }
 
 function getOptionResults(arr, type) {
-  const result = arr.reduce((r, item, i) => {
+  return arr.reduce((r, item, i) => {
     return r + `
       <div class="game__option  ${(item.selected === true) ? `game__option--selected` : ``}">
         <img src=${item.url} alt="Option ${i + 1}" width="${item.width}" height="${item.height}">
@@ -134,14 +129,13 @@ function getOptionResults(arr, type) {
       </div>
     `;
   }, ``);
-  return result;
 }
 
 function getLabels(type, i) {
   if (type === `findDrawing`) {
     return ``;
   } else {
-    const result = `
+    return `
     <label class="game__answer  game__answer--photo">
       <input name="question${i + 1}" type="radio" value="photo">
       <span>Фото</span>
@@ -151,7 +145,6 @@ function getLabels(type, i) {
       <span>Рисунок</span>
     </label>
     `;
-    return result;
   }
 }
 
@@ -226,7 +219,7 @@ function getRowBonus(item) {
     points = -points;
   }
 
-  const text = `
+  return `
     <tr>
     <td></td>
     <td class="result__extra">${name}:</td>
@@ -235,7 +228,6 @@ function getRowBonus(item) {
     <td class="result__total">${item.points * item.count}</td>
     </tr>
   `;
-  return text;
 }
 
 export function setProportions(item) {
