@@ -1,7 +1,4 @@
 import {changePageTemplate} from './utils.js';
-import greeting from './greeting';
+import intro from './intro';
 
-const intro = document.querySelector(`.intro__asterisk`);
-intro.addEventListener(`click`, () => {
-  changePageTemplate(greeting);
-});
+changePageTemplate(intro);
