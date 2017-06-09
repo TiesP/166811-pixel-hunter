@@ -1,38 +1,33 @@
-export default function makeData() {
-  return Object.freeze({
-    'game-1': {
-      type: `guessPhotoDrawing`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`],
-      pictures: [
-        {url: `https://k42.kn3.net/CF42609C8.jpg`, isPhoto: false, width: 468, height: 458},
-        {url: `http://i.imgur.com/1KegWPz.jpg`, isPhoto: true, width: 468, height: 458}
-      ],
-      lives: 2,
-      timer: `NN`
-    },
-    'game-2': {
-      type: `guessPhotoDrawing`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
-      pictures: [
-        {url: `https://k42.kn3.net/D2F0370D6.jpg`, isPhoto: false, width: 705, height: 455}
-      ],
-      lives: 2,
-      timer: `NN`
-    },
-    'game-3': {
-      type: `findDrawing`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
-      pictures: [
-        {url: `https://i.imgur.com/DiHM5Zb.jpg`, isPhoto: true, width: 304, height: 455},
-        {url: `http://i.imgur.com/DKR1HtB.jpg`, isPhoto: true, width: 304, height: 455, selected: true},
-        {url: `https://k32.kn3.net/5C7060EC5.jpg`, isPhoto: false, width: 304, height: 455}
-      ],
-      lives: 2,
-      timer: `NN`
-    },
+export function getData(key) {
+  const data = Object.freeze({
+    'levels': [
+      {
+        type: `twoPicture`,
+        stats: [`wrong`, `slow`, `fast`, `correct`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`],
+        pictures: [
+          {isPhoto: false, url: `https://k42.kn3.net/CF42609C8.jpg`},
+          {isPhoto: true, url: `http://i.imgur.com/1KegWPz.jpg`}
+        ]
+      },
+      {
+        type: `onePicture`,
+        stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
+        pictures: [
+          {isPhoto: false, url: `https://k42.kn3.net/D2F0370D6.jpg`}
+        ]
+      },
+      {
+        type: `threePicture`,
+        stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
+        pictures: [
+          {isPhoto: true, url: `https://i.imgur.com/DiHM5Zb.jpg`},
+          {isPhoto: true, url: `http://i.imgur.com/DKR1HtB.jpg`},
+          {isPhoto: false, url: `https://k32.kn3.net/5C7060EC5.jpg`}
+        ]
+      }
+    ],
     'results': [
       {
-        totalFinal: 950,
         total: 900,
         points: 100,
         stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
@@ -43,11 +38,10 @@ export default function makeData() {
         ]
       },
       {
-        totalFinal: 0,
+        total: 0,
         stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `wrong`, `fast`, `wrong`],
       },
       {
-        totalFinal: 950,
         total: 900,
         points: 100,
         stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
@@ -57,4 +51,24 @@ export default function makeData() {
       }
     ]
   });
+
+  if (key) {
+    return data[key];
+  } else {
+    return data;
+  }
+}
+
+const state = {
+  curLevel: 0,
+  lives: 2,
+  timer: `NN`
+};
+
+export function getState() {
+  return state;
+}
+
+export function setState(curKey, newValue) {
+  state[curKey] = newValue;
 }

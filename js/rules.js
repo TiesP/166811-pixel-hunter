@@ -1,9 +1,11 @@
-import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting, getHeader} from './utils.js';
-import gameOne from './game-1';
-import footer from './footer';
+import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
+import footer from './components/footer';
+import header from './components/header';
+import game from './game';
+import {setState} from './data';
 
 const moduleRules = getElementFromTemplate(`
-${getHeader()}
+${header()}
 <div class="rules">
   <h1 class="rules__title">Правила</h1>
   <p class="rules__description">Угадай 10 раз для каждого изображения фото <img
@@ -25,7 +27,8 @@ ${footer}
 
 const rulesButton = moduleRules.querySelector(`.rules__button`);
 rulesButton.addEventListener(`click`, () => {
-  changePageTemplate(gameOne);
+  setState(`curLevel`, 0);
+  changePageTemplate(game);
 });
 
 const rulesInput = moduleRules.querySelector(`.rules__input`);
