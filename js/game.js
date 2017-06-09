@@ -11,8 +11,8 @@ function getModule() {
   const curLevel = getState().curLevel;
   if (curLevel < levels.length) {
     level = levels[curLevel];
-    let template = getGameTemplate(level);
-    let curModuleGame = getElementFromTemplate(template, getState());
+    let template = getGameTemplate(level, getState());
+    let curModuleGame = getElementFromTemplate(template);
     addEventHandlers(curModuleGame);
     imgProportion(curModuleGame);
     return curModuleGame;
