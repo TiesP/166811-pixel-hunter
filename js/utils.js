@@ -2,10 +2,7 @@ import greeting from './greeting';
 
 const main = document.querySelector(`main.central`);
 
-export function changePageTemplate(template, which) {
-  if (which && which !== 1) {
-    return;
-  }
+export function changePageTemplate(template) {
   main.innerHTML = ``;
   main.appendChild(template);
 }

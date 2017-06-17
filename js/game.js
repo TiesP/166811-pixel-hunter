@@ -4,16 +4,15 @@ import getGameTemplate from './gameView';
 import stats from './stats';
 
 const levels = getData(`levels`);
-let level = levels[getState().curLevel];
 const stateModule = {question1: ``, question2: ``};
 
 function getModule() {
   const curLevel = getState().curLevel;
   if (curLevel < levels.length) {
-    level = levels[curLevel];
-    let template = getGameTemplate(level, getState());
-    let curModuleGame = getElementFromTemplate(template);
-    addEventHandlers(curModuleGame);
+    const level = levels[curLevel];
+    const template = getGameTemplate(level, getState());
+    const curModuleGame = getElementFromTemplate(template);
+    addEventHandlers(curModuleGame, level);
     imgProportion(curModuleGame);
     return curModuleGame;
   } else {
@@ -40,7 +39,7 @@ function checkComplete(e) {
   }
 }
 
-function addEventHandlers(curModuleGame) {
+function addEventHandlers(curModuleGame, level) {
   let items;
   if (level.type === `twoPicture`) {
     items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
@@ -60,7 +59,9 @@ function addEventHandlers(curModuleGame) {
     items = Array.from(curModuleGame.querySelectorAll(`.game__option`));
     items.forEach((item) => {
       item.addEventListener(`mousedown`, (event) => {
-        changePageTemplate(nextModule(), event.which);
+        if (event.which === 1) {
+          changePageTemplate(nextModule());
+        }
       });
     });
   }
