@@ -33,11 +33,7 @@ rulesButton.addEventListener(`click`, () => {
 
 const rulesInput = moduleRules.querySelector(`.rules__input`);
 rulesInput.addEventListener(`input`, (event) => {
-  if (event.currentTarget.value) {
-    rulesButton.disabled = false;
-  } else {
-    rulesButton.disabled = true;
-  }
+  rulesButton.disabled = !event.currentTarget.value;
 });
 
 export default addHandlerBackGreeting(moduleRules);
