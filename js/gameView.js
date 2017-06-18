@@ -1,6 +1,7 @@
 import footer from './components/footer';
 import header from './components/header';
 import getLineStats from './components/lineStats';
+import {getData} from './data';
 
 export default function getGameTemplate(level, state) {
   return `
@@ -11,42 +12,22 @@ export default function getGameTemplate(level, state) {
 }
 
 function getLevelTemplate(level) {
-  let title;
-  let className = ``;
-  let width;
-  let height;
-  if (level.type === `threePicture`) {
-    title = `Найдите рисунок среди изображений`;
-    className = `game__content--triple`;
-    width = 468;
-    height = 458;
-  } else if (level.type === `onePicture`) {
-    title = `Угадай, фото или рисунок?`;
-    className = `game__content--wide`;
-    width = 705;
-    height = 455;
-  } else if (level.type === `twoPicture`) {
-    title = `Угадайте для каждого изображения фото или рисунок?`;
-    width = 304;
-    height = 455;
-  }
-
   return `
      <div class="game">
-      <p class="game__task">${title}</p>
-      <form class="game__content ${className}">
-        ${getOptionResults(level.pictures, level.type, width, height)}
+      <p class="game__task">${getData().types[level.type].title}</p>
+      <form class="game__content ${getData().types[level.type].className}">
+        ${getOptionResults(level.pictures, level.type)}
       </form>
       ${getLineStats(level.stats)}
     </div>
    `;
 }
 
-function getOptionResults(arr, type, width, height) {
+function getOptionResults(arr, type) {
   return arr.reduce((r, item, i) => {
     return r + `
       <div class="game__option">
-        <img src=${item.url} alt="Option ${i + 1}" width="${width}" height="${height}">
+        <img src=${item.url} alt="Option ${i + 1}">
         ${getLabels(type, i)}
       </div>
     `;

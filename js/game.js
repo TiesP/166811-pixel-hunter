@@ -3,7 +3,7 @@ import {getData, getState, setState} from './data';
 import getGameTemplate from './gameView';
 import stats from './stats';
 
-const levels = getData(`levels`);
+const levels = getData().levels;
 const stateModule = {question1: ``, question2: ``};
 
 function getModule() {
@@ -13,8 +13,8 @@ function getModule() {
     const template = getGameTemplate(level, getState());
     const curModuleGame = getElementFromTemplate(template);
     addEventHandlers(curModuleGame, level);
-    imgProportion(curModuleGame);
-    return curModuleGame;
+    imgProportion(curModuleGame, level);
+    return addHandlerBackGreeting(curModuleGame);
   } else {
     return stats;
   }
@@ -67,23 +67,25 @@ function addEventHandlers(curModuleGame, level) {
   }
 }
 
-function imgProportion(curModuleGame) {
+function imgProportion(curModuleGame, level) {
   const imgs = Array.from(curModuleGame.querySelectorAll(`.game__option img`));
   imgs.forEach((item) => {
     item.addEventListener(`load`, (event) => {
-      setProportions(item);
+      setProportions(item, level);
     });
   });
 }
 
-function setProportions(item) {
-  if (item.naturalWidth / item.naturalHeight > item.width / item.height) {
-    item.height = item.naturalHeight * item.width / item.naturalWidth;
+function setProportions(item, level) {
+  const width = getData().types[level.type].width;
+  const height = getData().types[level.type].height;
+  if (item.naturalWidth / item.naturalHeight > width / height) {
+    item.width = width;
   } else {
-    item.width = item.naturalWidth * item.height / item.naturalHeight;
+    item.height = height;
   }
 }
 
 let moduleGame = getModule();
 
-export default addHandlerBackGreeting(moduleGame);
+export default moduleGame;

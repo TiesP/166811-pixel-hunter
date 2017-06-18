@@ -25,6 +25,26 @@ const data = Object.freeze({
       ]
     }
   ],
+  'types': {
+    onePicture: {
+      title: `Угадай, фото или рисунок?`,
+      className: `game__content--wide`,
+      width: 705,
+      height: 455
+    },
+    twoPicture: {
+      title: `Угадайте для каждого изображения фото или рисунок?`,
+      className: ``,
+      width: 468,
+      height: 458
+    },
+    threePicture: {
+      title: `Найдите рисунок среди изображений`,
+      className: `game__content--triple`,
+      width: 304,
+      height: 455
+    }
+  },
   'results': [
     {
       total: 900,
