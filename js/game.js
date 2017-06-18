@@ -13,7 +13,7 @@ function getModule() {
     const template = getGameTemplate(level, getState());
     const curModuleGame = getElementFromTemplate(template);
     addEventHandlers(curModuleGame, level);
-    imgProportion(curModuleGame, level);
+    imgProportion(curModuleGame);
     return addHandlerBackGreeting(curModuleGame);
   } else {
     return stats;
@@ -67,18 +67,18 @@ function addEventHandlers(curModuleGame, level) {
   }
 }
 
-function imgProportion(curModuleGame, level) {
+function imgProportion(curModuleGame) {
   const imgs = Array.from(curModuleGame.querySelectorAll(`.game__option img`));
   imgs.forEach((item) => {
     item.addEventListener(`load`, (event) => {
-      setProportions(item, level);
+      setProportions(item);
     });
   });
 }
 
-function setProportions(item, level) {
-  const width = getData().types[level.type].width;
-  const height = getData().types[level.type].height;
+function setProportions(item) {
+  const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
+  const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
   if (item.naturalWidth / item.naturalHeight > width / height) {
     item.width = width;
   } else {
