@@ -1,122 +1,94 @@
 import {getElementFromTemplate, addHandlerBackGreeting} from './utils.js';
+import {getData} from './data';
+import footer from './components/footer';
+import header from './components/header';
+import getLineStats from './components/lineStats';
 
-const moduleStats = getElementFromTemplate(`<header class="header">
-  <div class="header__back">
-    <span class="back">
-      <img src="img/arrow_left.svg" width="45" height="45" alt="Back">
-      <img src="img/logo_small.png" width="101" height="44">
-    </span>
-  </div>
-</header>
+const moduleStats = getElementFromTemplate(`
+${header()}
 <div class="result">
   <h1>Победа!</h1>
-  <table class="result__table">
-    <tr>
-      <td class="result__number">1.</td>
-      <td colspan="2">
-        <ul class="stats">
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--correct"></li>
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--unknown"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--unknown"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--unknown"></li>
-        </ul>
-      </td>
-      <td class="result__points">×&nbsp;100</td>
-      <td class="result__total">900</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="result__extra">Бонус за скорость:</td>
-      <td class="result__extra">1&nbsp;<span class="stats__result stats__result--fast"></span></td>
-      <td class="result__points">×&nbsp;50</td>
-      <td class="result__total">50</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="result__extra">Бонус за жизни:</td>
-      <td class="result__extra">2&nbsp;<span class="stats__result stats__result--heart"></span></td>
-      <td class="result__points">×&nbsp;50</td>
-      <td class="result__total">100</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="result__extra">Штраф за медлительность:</td>
-      <td class="result__extra">2&nbsp;<span class="stats__result stats__result--slow"></span></td>
-      <td class="result__points">×&nbsp;50</td>
-      <td class="result__total">-100</td>
-    </tr>
-    <tr>
-      <td colspan="5" class="result__total  result__total--final">950</td>
-    </tr>
-  </table>
-  <table class="result__table">
-    <tr>
-      <td class="result__number">2.</td>
-      <td>
-        <ul class="stats">
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--correct"></li>
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--unknown"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--wrong"></li>
-        </ul>
-      </td>
-      <td class="result__total"></td>
-      <td class="result__total  result__total--final">fail</td>
-    </tr>
-  </table>
-  <table class="result__table">
-    <tr>
-      <td class="result__number">3.</td>
-      <td colspan="2">
-        <ul class="stats">
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--correct"></li>
-          <li class="stats__result stats__result--wrong"></li>
-          <li class="stats__result stats__result--unknown"></li>
-          <li class="stats__result stats__result--slow"></li>
-          <li class="stats__result stats__result--unknown"></li>
-          <li class="stats__result stats__result--fast"></li>
-          <li class="stats__result stats__result--unknown"></li>
-        </ul>
-      </td>
-      <td class="result__points">×&nbsp;100</td>
-      <td class="result__total">900</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="result__extra">Бонус за жизни:</td>
-      <td class="result__extra">2&nbsp;<span class="stats__result stats__result--heart"></span></td>
-      <td class="result__points">×&nbsp;50</td>
-      <td class="result__total">100</td>
-    </tr>
-    <tr>
-      <td colspan="5" class="result__total  result__total--final">950</td>
-    </tr>
-  </table>
+  ${getResults()}
 </div>
-<footer class="footer">
-  <a href="https://htmlacademy.ru" class="social-link social-link--academy">HTML Academy</a>
-  <span class="footer__made-in">Сделано в <a href="https://htmlacademy.ru" class="footer__link">HTML Academy</a> &copy; 2016</span>
-  <div class="footer__social-links">
-    <a href="https://twitter.com/htmlacademy_ru" class="social-link  social-link--tw">Твиттер</a>
-    <a href="https://www.instagram.com/htmlacademy/" class="social-link  social-link--ins">Инстаграм</a>
-    <a href="https://www.facebook.com/htmlacademy" class="social-link  social-link--fb">Фэйсбук</a>
-    <a href="https://vk.com/htmlacademy" class="social-link  social-link--vk">Вконтакте</a>
-  </div>
-</footer>`);
+${footer}
+`);
+
+function getResults() {
+  const results = getData(`results`);
+  return results.reduce((r, item, i) => {
+    return r + getTableBonuses(item, i);
+  }, ``);
+}
+
+function getTableBonuses(item, i) {
+  let tableText;
+  if (item.total === 0) {
+    tableText = `
+      <table class="result__table">
+        <tr>
+          <td class="result__number">${i + 1}.</td>
+          <td>
+            ${getLineStats(item.stats)}
+          </td>
+          <td class="result__total"></td>
+          <td class="result__total  result__total--final">fail</td>
+        </tr>
+      </table>
+    `;
+  } else {
+    tableText = `
+      <table class="result__table">
+        <tr>
+          <td class="result__number">${i + 1}.</td>
+          <td colspan="2">
+            ${getLineStats(item.stats)}
+          </td>
+          <td class="result__points">×&nbsp;${item.points}</td>
+          <td class="result__total">${item.total}</td>
+        </tr>
+        ${getBonuses(item.bonuses)}
+        <tr>
+          <td colspan="5" class="result__total  result__total--final">${item.total + getSumBonuses(item.bonuses)}</td>
+        </tr>
+      </table>
+    `;
+  }
+  return tableText;
+}
+
+function getSumBonuses(bonuses) {
+  return bonuses.reduce((r, item) => {
+    return r + (item.points * item.count);
+  }, 0);
+}
+
+function getBonuses(bonuses) {
+  return bonuses.reduce((r, item) => {
+    return r + getRowBonus(item);
+  }, ``);
+}
+
+function getRowBonus(item) {
+  return `
+    <tr>
+    <td></td>
+    <td class="result__extra">${getBonusName(item.type)}:</td>
+    <td class="result__extra">${item.count}&nbsp;<span class="stats__result stats__result--${item.type}"></span></td>
+    <td class="result__points">×&nbsp;${(item.type === `slow`) ? -item.points : item.points}</td>
+    <td class="result__total">${item.points * item.count}</td>
+    </tr>
+  `;
+}
+
+function getBonusName(type) {
+  if (type === `fast`) {
+    return `Бонус за скорость`;
+  } else if (type === `heart`) {
+    return `Бонус за жизни`;
+  } else if (type === `slow`) {
+    return `Штраф за медлительность`;
+  }
+  return ``;
+}
 
 export default addHandlerBackGreeting(moduleStats);
