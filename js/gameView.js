@@ -2,8 +2,10 @@ import footer from './components/footer';
 import header from './components/header';
 import getLineStats from './components/lineStats';
 import {getData} from './data';
+import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
+import {checkComplete, nextModule} from './game.js';
 
-export default function getGameTemplate(level, state) {
+export function getGameTemplate(level, state) {
   return `
     ${header(state)}
     ${getLevelTemplate(level)}
@@ -48,5 +50,60 @@ function getLabels(type, i) {
       <span>Рисунок</span>
     </label>
     `;
+  }
+}
+
+export function getGameModule(level, state) {
+  const template = getGameTemplate(level, state);
+  const curModuleGame = getElementFromTemplate(template);
+  addEventHandlers(curModuleGame, level);
+  imgProportion(curModuleGame);
+  return addHandlerBackGreeting(curModuleGame);
+}
+
+function addEventHandlers(curModuleGame, level) {
+  let items;
+  if (level.type === `twoPicture`) {
+    items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
+    items.forEach((item) => {
+      item.addEventListener(`change`, (event) => {
+        checkComplete(event);
+      });
+    });
+  } else if (level.type === `onePicture`) {
+    items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
+    items.forEach((item) => {
+      item.addEventListener(`click`, (event) => {
+        changePageTemplate(nextModule());
+      });
+    });
+  } else if (level.type === `threePicture`) {
+    items = Array.from(curModuleGame.querySelectorAll(`.game__option`));
+    items.forEach((item) => {
+      item.addEventListener(`mousedown`, (event) => {
+        if (event.which === 1) {
+          changePageTemplate(nextModule());
+        }
+      });
+    });
+  }
+}
+
+function imgProportion(curModuleGame) {
+  const imgs = Array.from(curModuleGame.querySelectorAll(`.game__option img`));
+  imgs.forEach((item) => {
+    item.addEventListener(`load`, (event) => {
+      setProportions(item);
+    });
+  });
+}
+
+function setProportions(item) {
+  const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
+  const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
+  if (item.naturalWidth / item.naturalHeight > width / height) {
+    item.width = width;
+  } else {
+    item.height = height;
   }
 }
