@@ -1,9 +1,10 @@
 import footer from './components/footer';
 import header from './components/header';
 import getLineStats from './components/lineStats';
-import {getData} from './data';
+import {getData, getState} from './data';
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
-import {checkComplete, nextModule} from './game.js';
+import {checkComplete, nextLevel} from './game.js';
+import stats from './stats';
 
 export function getGameTemplate(level, state) {
   return `
@@ -68,6 +69,9 @@ function addEventHandlers(curModuleGame, level) {
     items.forEach((item) => {
       item.addEventListener(`change`, (event) => {
         checkComplete(event);
+        if (checkComplete(event)) {
+          changePageTemplate(nextModule());
+        }
       });
     });
   } else if (level.type === `onePicture`) {
@@ -107,3 +111,20 @@ function setProportions(item) {
     item.height = height;
   }
 }
+
+function getModule() {
+  const levels = getData().levels;
+  const curLevel = getState().curLevel;
+  if (curLevel < levels.length) {
+    return getGameModule(levels[curLevel], getState());
+  } else {
+    return stats;
+  }
+}
+
+function nextModule() {
+  nextLevel();
+  return getModule();
+}
+
+export default getModule();

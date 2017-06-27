@@ -1,7 +1,7 @@
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
 import footer from './components/footer';
 import header from './components/header';
-import game from './game';
+import game from './gameView';
 import {setState} from './data';
 
 const moduleRules = getElementFromTemplate(`
