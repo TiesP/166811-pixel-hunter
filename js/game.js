@@ -1,6 +1,6 @@
 import {getState, setState} from './data';
 
-const stateModule = { question1: ``, question2: `` };
+const stateModule = {question1: ``, question2: ``};
 
 export function nextLevel() {
   setState(`curLevel`, getState().curLevel + 1);
