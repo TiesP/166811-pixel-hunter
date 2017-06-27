@@ -3,7 +3,7 @@ import header from './components/header';
 import getLineStats from './components/lineStats';
 import {getData, getState} from './data';
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
-import {checkComplete, nextLevel} from './game.js';
+import {checkComplete, nextLevel, newGame} from './game.js';
 import stats from './stats';
 
 export function getGameTemplate(level, state) {
@@ -126,5 +126,7 @@ function nextModule() {
   nextLevel();
   return getModule();
 }
+
+newGame();
 
 export default getModule();

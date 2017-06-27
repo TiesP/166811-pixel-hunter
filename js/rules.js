@@ -27,7 +27,7 @@ ${footer}
 
 const rulesButton = moduleRules.querySelector(`.rules__button`);
 rulesButton.addEventListener(`click`, () => {
-  setState(`curLevel`, 0);
+  setState(0, `curLevel`);
   changePageTemplate(game);
 });
 

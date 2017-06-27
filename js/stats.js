@@ -14,7 +14,7 @@ ${footer}
 `);
 
 function getResults() {
-  const results = getData(`results`);
+  const results = getData().results;
   return results.reduce((r, item, i) => {
     return r + getTableBonuses(item, i);
   }, ``);

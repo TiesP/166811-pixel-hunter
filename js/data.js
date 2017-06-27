@@ -62,23 +62,35 @@ const data = Object.freeze({
         {type: `heart`, count: 2, points: 50}
       ]
     }
-  ]
+  ],
+  'initialState': {
+    curLevel: 0,
+    lives: 3,
+    timer: 30,
+    answers: []
+  },
+  'rules': {
+    correctAnswerPoints: 100,
+    additionalPoints: [{time: 9, points: 50}, {time: 20, points: 0}, {time: 30, points: -50}],
+    remainingLifePoints: 50
+  }
 });
 
-export function getData(key) {
-  return (key) ? data[key] : data;
+export function getData() {
+  return data;
 }
 
-const state = {
-  curLevel: 0,
-  lives: 2,
-  timer: `NN`
-};
+let state;
+setState(getData().initialState);
 
 export function getState() {
   return state;
 }
 
-export function setState(curKey, newValue) {
-  state[curKey] = newValue;
+export function setState(newValue, key) {
+  if (key) {
+    state[key] = newValue;
+  } else {
+    state = Object.assign({}, newValue);
+  }
 }
