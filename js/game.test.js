@@ -1,14 +1,31 @@
 import assert from 'assert';
 import {getState} from './data';
-import {reduceLives, newGame, addAnswer, checkBonus, fillResults} from './game';
+import {reduceLives, newGame, addAnswer, checkBonus, fillResults, nextLevel} from './game';
 
 describe(`Game`, () => {
+
+  describe(`Levels`, () => {
+
+    it(`should be level change to 1`, () => {
+      newGame();
+      const newState = nextLevel(getState());
+      assert.equal(1, newState.curLevel);
+    });
+
+    it(`should be level 0`, () => {
+      newGame();
+      assert.equal(0, getState().curLevel);
+    });
+
+  });
+
   describe(`Character lives`, () => {
 
     it(`reduce Lives`, () => {
+      newGame();
       const lives = getState().lives;
-      reduceLives();
-      assert.equal(getState().lives, lives - 1);
+      const newState = reduceLives(getState());
+      assert.equal(newState.lives, lives - 1);
     });
 
     it(`new game must 3 Lives`, () => {
@@ -22,18 +39,20 @@ describe(`Game`, () => {
 
     it(`add 1 answer`, () => {
       newGame();
-      assert.equal(getState().answers.length, 0);
-      addAnswer(20, true);
-      assert.equal(getState().answers.length, 1);
+      const state = getState();
+      assert.equal(state.answers.length, 0);
+      const newState = addAnswer(state, 20, true);
+      assert.equal(newState.answers.length, 1);
     });
 
     it(`add 10 answer`, () => {
       newGame();
-      assert.equal(getState().answers.length, 0);
+      let state = getState();
+      assert.equal(state.answers.length, 0);
       for (let i = 1; i <= 10; i++) {
-        addAnswer(i * 3, true);
+        state = addAnswer(state, i * 3, true);
       }
-      assert.equal(getState().answers.length, 10);
+      assert.equal(state.answers.length, 10);
     });
 
   });
@@ -61,43 +80,29 @@ describe(`Game`, () => {
 
     it(`1 quick correct answer - check total`, () => {
       newGame();
-      addAnswer(8, true);
-      fillResults();
-      assert.equal(getState().result.total, 150);
+      let state = getState();
+      state = addAnswer(state, 8, true);
+      state = fillResults(state);
+      assert.equal(state.result.total, 150);
     });
 
     it(`3 quick answer - check total`, () => {
       newGame();
-      addAnswer(3, false);
-      addAnswer(6, true);
-      addAnswer(9, false);
-      fillResults();
-      assert.equal(getState().result.total, 150);
-    });
-
-    it(`2 normal correct answer - check total`, () => {
-      newGame();
-      addAnswer(12, true);
-      addAnswer(18, true);
-      fillResults();
-      assert.equal(getState().result.total, 200);
-    });
-
-    it(`3 normal answer - check total`, () => {
-      newGame();
-      addAnswer(12, true);
-      addAnswer(15, false);
-      addAnswer(18, true);
-      fillResults();
-      assert.equal(getState().result.total, 200);
+      let state = getState();
+      state = addAnswer(state, 3, false);
+      state = addAnswer(state, 6, true);
+      state = addAnswer(state, 9, false);
+      state = fillResults(state);
+      assert.equal(state.result.total, 150);
     });
 
     it(`10 different answer - check total`, () => {
       newGame();
+      let state = getState();
       for (let i = 1; i <= 10; i++) {
-        addAnswer(i * 3, (i % 2) ? false : true);
+        state = addAnswer(state, i * 3, (i % 2) ? false : true);
       }
-      fillResults();
+      state = fillResults(state);
       // 3 false
       // 6 true
       // 9 false
@@ -108,7 +113,7 @@ describe(`Game`, () => {
       // 24 true
       // 27 false
       // 30 true
-      assert.equal(getState().result.total, 0 + 150 + 0 + 100 + 0 + 100 + 0 + (100 - 50) + 0 + (100 - 50));
+      assert.equal(state.result.total, 0 + 150 + 0 + 100 + 0 + 100 + 0 + (100 - 50) + 0 + (100 - 50));
     });
 
   });

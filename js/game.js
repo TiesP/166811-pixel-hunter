@@ -1,47 +1,72 @@
 import {getState, setState, getData} from './data';
 
-const stateModule = {question1: ``, question2: ``};
-
-export function nextLevel() {
-  setState(getState().curLevel + 1, `curLevel`);
-}
-
-export function checkComplete(e) {
-  stateModule[e.currentTarget.name] = e.currentTarget.value;
-  let key;
-  let complete = true;
-  for (key in stateModule) {
-    if (!stateModule[key]) {
-      complete = false;
-    }
-  }
-  return complete;
-}
-
-export function reduceLives() {
-  setState(getState().lives - 1, `lives`);
-}
+const stateModule = {};
 
 export function newGame() {
-  setState(getData().initialState);
-  setState([], `answers`);
-  setState({}, `result`);
+  const newState = getData().initialState;
+  newState.answers = [];
+  newState.result = {};
+  setState(newState);
 }
 
-export function addAnswer(time, correct) {
-  const answers = getState().answers;
-  answers.push({time, correct});
-  setState(answers, `answers`);
+export function nextLevel(state) {
+  const newLevel = state.curLevel + 1;
+  state = Object.assign({}, state);
+  state.curLevel = newLevel;
+  return state;
 }
 
-export function fillResults() {
+export function reduceLives(state) {
+  const newLives = state.lives - 1;
+  state = Object.assign({}, state);
+  state.lives = newLives;
+  return state;
+}
+
+function checkCorrect() {
+  let correct = true;
+  for (let key in stateModule) {
+    if (stateModule[key] === false) {
+      correct = false;
+    }
+  }
+  return correct;
+}
+
+export function checkAnswer(item, twoQuestions) {
+  if (twoQuestions) {
+    stateModule[item.name] = item.dataset.correct;
+    const keys = Object.keys(stateModule);
+    if (keys.length === 2) {
+      setState(addAnswer(getState(), 0, checkCorrect()));
+    }
+  } else {
+    setState(addAnswer(getState(), 0, item.dataset.correct));
+  }
+}
+
+export function checkComplete() {
+  return (Object.keys(stateModule).length === 2);
+}
+
+export function addAnswer(state, time, correct) {
+  const answers = state.answers;
+  const newAnswers = answers.concat({time, correct});
+  state = Object.assign({}, state);
+  state.answers = newAnswers;
+  return state;
+}
+
+export function fillResults(state) {
   const result = {};
-  const answers = getState().answers;
+  const answers = state.answers;
   const total = answers.reduce((r, item) => {
     return r + (item.correct ? (100 + checkBonus(item.time)) : 0);
   }, 0);
   result.total = total;
-  setState(result, `result`);
+  state = Object.assign({}, state);
+  state.result = result;
+  return state;
 }
 
 export function checkBonus(time) {

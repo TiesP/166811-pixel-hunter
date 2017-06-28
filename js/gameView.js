@@ -1,9 +1,9 @@
 import footer from './components/footer';
 import header from './components/header';
 import getLineStats from './components/lineStats';
-import {getData, getState} from './data';
+import {getData, getState, setState} from './data';
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
-import {checkComplete, nextLevel, newGame} from './game.js';
+import {checkComplete, nextLevel, newGame, checkAnswer} from './game.js';
 import stats from './stats';
 
 export function getGameTemplate(level, state) {
@@ -29,25 +29,25 @@ function getLevelTemplate(level) {
 function getOptionResults(arr, type) {
   return arr.reduce((r, item, i) => {
     return r + `
-      <div class="game__option">
+      <div class="game__option" ${(type === `threePicture`) ? `data-correct="${!item.isPhoto}"` : ``}>
         <img src=${item.url} alt="Option ${i + 1}">
-        ${getLabels(type, i)}
+        ${getLabels(type, i, item.isPhoto)}
       </div>
     `;
   }, ``);
 }
 
-function getLabels(type, i) {
+function getLabels(type, i, isPhoto) {
   if (type === `threePicture`) {
     return ``;
   } else {
     return `
     <label class="game__answer  game__answer--photo">
-      <input name="question${i + 1}" type="radio" value="photo">
+      <input name="question${i + 1}" type="radio" value="photo" data-correct="${isPhoto}">
       <span>Фото</span>
     </label>
     <label class="game__answer  game__answer--wide  game__answer--paint">
-      <input name="question${i + 1}" type="radio" value="paint">
+      <input name="question${i + 1}" type="radio" value="paint" data-correct="${!isPhoto}">
       <span>Рисунок</span>
     </label>
     `;
@@ -68,8 +68,8 @@ function addEventHandlers(curModuleGame, level) {
     items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
     items.forEach((item) => {
       item.addEventListener(`change`, (event) => {
-        checkComplete(event);
-        if (checkComplete(event)) {
+        checkAnswer(item, true);
+        if (checkComplete()) {
           changePageTemplate(nextModule());
         }
       });
@@ -78,6 +78,7 @@ function addEventHandlers(curModuleGame, level) {
     items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
     items.forEach((item) => {
       item.addEventListener(`click`, (event) => {
+        checkAnswer(item);
         changePageTemplate(nextModule());
       });
     });
@@ -86,6 +87,7 @@ function addEventHandlers(curModuleGame, level) {
     items.forEach((item) => {
       item.addEventListener(`mousedown`, (event) => {
         if (event.which === 1) {
+          checkAnswer(item);
           changePageTemplate(nextModule());
         }
       });
@@ -123,7 +125,7 @@ function getModule() {
 }
 
 function nextModule() {
-  nextLevel();
+  setState(nextLevel(getState()));
   return getModule();
 }
 
