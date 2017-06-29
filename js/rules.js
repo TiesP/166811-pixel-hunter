@@ -1,8 +1,8 @@
 import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
 import footer from './components/footer';
 import header from './components/header';
-import game from './game';
-import {setState} from './data';
+import game from './gameView';
+import {newGame} from './game';
 
 const moduleRules = getElementFromTemplate(`
 ${header()}
@@ -27,8 +27,8 @@ ${footer}
 
 const rulesButton = moduleRules.querySelector(`.rules__button`);
 rulesButton.addEventListener(`click`, () => {
-  setState(`curLevel`, 0);
-  changePageTemplate(game);
+  newGame();
+  changePageTemplate(game());
 });
 
 const rulesInput = moduleRules.querySelector(`.rules__input`);

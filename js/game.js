@@ -1,91 +1,136 @@
-import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from './utils.js';
-import {getData, getState, setState} from './data';
-import getGameTemplate from './gameView';
-import stats from './stats';
+import {getState, setState, getData} from './data';
 
-const levels = getData().levels;
-const stateModule = {question1: ``, question2: ``};
+let stateModule = {};
 
-function getModule() {
-  const curLevel = getState().curLevel;
-  if (curLevel < levels.length) {
-    const level = levels[curLevel];
-    const template = getGameTemplate(level, getState());
-    const curModuleGame = getElementFromTemplate(template);
-    addEventHandlers(curModuleGame, level);
-    imgProportion(curModuleGame);
-    return addHandlerBackGreeting(curModuleGame);
-  } else {
-    return stats;
+export function newGame() {
+  const newState = getData().initialState;
+  newState.answers = [];
+  newState.result = {};
+  setState(newState);
+  stateModule = {};
+}
+
+function changeState(state, key, value) {
+  state = Object.assign({}, state);
+  state[key] = value;
+  return state;
+}
+
+export function nextLevel(state) {
+  let curLevel = state.curLevel;
+  if (!curLevel) {
+    curLevel = 0;
   }
+  return changeState(state, `curLevel`, curLevel + 1);
 }
 
-function nextModule() {
-  setState(`curLevel`, getState().curLevel + 1);
-  return getModule();
+export function reduceLives(state) {
+  let lives = state.lives;
+  if (!lives) {
+    lives = getData().initialState.lives;
+  }
+  return changeState(state, `lives`, lives - 1);
 }
 
-function checkComplete(e) {
-  stateModule[e.currentTarget.name] = e.currentTarget.value;
-  let complete = true;
-  let key;
-  for (key in stateModule) {
-    if (!stateModule[key]) {
-      complete = false;
+function checkCorrect() {
+  let correct = true;
+  for (let key in stateModule) {
+    if (stateModule[key] === false) {
+      correct = false;
     }
   }
-  if (complete) {
-    changePageTemplate(nextModule());
-  }
+  return correct;
 }
 
-function addEventHandlers(curModuleGame, level) {
-  let items;
-  if (level.type === `twoPicture`) {
-    items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
-    items.forEach((item) => {
-      item.addEventListener(`change`, (event) => {
-        checkComplete(event);
-      });
-    });
-  } else if (level.type === `onePicture`) {
-    items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
-    items.forEach((item) => {
-      item.addEventListener(`click`, (event) => {
-        changePageTemplate(nextModule());
-      });
-    });
-  } else if (level.type === `threePicture`) {
-    items = Array.from(curModuleGame.querySelectorAll(`.game__option`));
-    items.forEach((item) => {
-      item.addEventListener(`mousedown`, (event) => {
-        if (event.which === 1) {
-          changePageTemplate(nextModule());
-        }
-      });
-    });
-  }
-}
-
-function imgProportion(curModuleGame) {
-  const imgs = Array.from(curModuleGame.querySelectorAll(`.game__option img`));
-  imgs.forEach((item) => {
-    item.addEventListener(`load`, (event) => {
-      setProportions(item);
-    });
-  });
-}
-
-function setProportions(item) {
-  const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
-  const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
-  if (item.naturalWidth / item.naturalHeight > width / height) {
-    item.width = width;
+export function checkAnswer(item, twoQuestions) {
+  if (twoQuestions) {
+    stateModule[item.name] = item.dataset.correct;
+    const keys = Object.keys(stateModule);
+    if (keys.length === 2) {
+      setState(addAnswer(getState(), 0, checkCorrect()));
+    }
   } else {
-    item.height = height;
+    setState(addAnswer(getState(), 0, item.dataset.correct));
   }
 }
 
-let moduleGame = getModule();
+export function checkComplete() {
+  return (Object.keys(stateModule).length === 2);
+}
 
-export default moduleGame;
+export function addAnswer(state, time, correct) {
+  let answers = state.answers;
+  if (!answers) {
+    answers = [];
+  }
+
+  const newAnswers = answers.concat({time, correct});
+  state = changeState(state, `answers`, newAnswers);
+
+  const newStats = addStat(state, time, correct);
+  state = changeState(state, `stats`, newStats);
+  return state;
+}
+
+export function addStat(state, time, correct) {
+  let stats = state.stats;
+  if (!stats) {
+    stats = [];
+  }
+  return stats.concat(getStats(correct, time));
+}
+
+export function getStats(correct, time) {
+  if (!correct) {
+    return `wrong`;
+  }
+  const addPoints = getData().rules.addPoints;
+  for (let i = 0; i < addPoints.length; i++) {
+    if (time <= addPoints[i].time) {
+      return addPoints[i].type;
+    }
+  }
+  return `unknown`;
+}
+
+export function fillResults(state) {
+  const result = {};
+  const bonuses = {};
+  const total = state.answers.reduce((r, item) => {
+    if (item.correct) {
+      checkBonus(item.time, bonuses);
+      return r + 100;
+    } else {
+      return r;
+    }
+  }, 0);
+  result.total = total;
+  result.bonuses = bonuses;
+  result.stats = state.stats;
+  return result;
+}
+
+export function checkBonus(time, bonuses) {
+  const addPoints = getData().rules.addPoints;
+  for (let i = 0; i < addPoints.length; i++) {
+    if (time <= addPoints[i].time) {
+      let points = addPoints[i].points;
+      addBonus(bonuses, points, addPoints[i].type);
+      return points;
+    }
+  }
+  return 0;
+}
+
+export function addBonus(bonuses, points, type) {
+  if (!bonuses) {
+    return;
+  }
+  if (points !== 0) {
+    if (!bonuses[type]) {
+      bonuses[type] = {count: 1, points};
+    } else {
+      bonuses[type].count++;
+    }
+  }
+}
