@@ -16,11 +16,19 @@ function changeState(state, key, value) {
 }
 
 export function nextLevel(state) {
-  return changeState(state, `curLevel`, state.curLevel + 1);
+  let curLevel = state.curLevel;
+  if (!curLevel) {
+    curLevel = 0;
+  }
+  return changeState(state, `curLevel`, curLevel + 1);
 }
 
 export function reduceLives(state) {
-  return changeState(state, `lives`, state.lives - 1);
+  let lives = state.lives;
+  if (!lives) {
+    lives = getData().initialState.lives;
+  }
+  return changeState(state, `lives`, lives - 1);
 }
 
 function checkCorrect() {

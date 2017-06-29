@@ -1,38 +1,27 @@
 import assert from 'assert';
-import {getState} from './data';
-import {reduceLives, newGame, addAnswer, checkBonus, fillResults, nextLevel, addBonus, getStats} from './game';
+import {reduceLives, addAnswer, checkBonus, fillResults, nextLevel, addBonus, getStats} from './game';
 
 describe(`Game`, () => {
 
   describe(`Levels`, () => {
 
     it(`should be level change to 1`, () => {
-      newGame();
-      const newState = nextLevel(getState());
-      assert.equal(1, newState.curLevel);
+      assert.equal(nextLevel({}).curLevel, 1);
     });
 
-    it(`should be level 0`, () => {
-      newGame();
-      assert.equal(0, getState().curLevel);
+    it(`should be level change to 2`, () => {
+      let state = {};
+      state = nextLevel(state);
+      state = nextLevel(state);
+      assert.equal(state.curLevel, 2);
     });
 
   });
 
   describe(`Character lives`, () => {
-
-    it(`reduce Lives`, () => {
-      newGame();
-      const lives = getState().lives;
-      const newState = reduceLives(getState());
-      assert.equal(newState.lives, lives - 1);
+    it(`new game must 3 Lives - reduce Lives = 2`, () => {
+      assert.equal(reduceLives({}).lives, 2);
     });
-
-    it(`new game must 3 Lives`, () => {
-      newGame();
-      assert.equal(getState().lives, 3);
-    });
-
   });
 
   describe(`Stats`, () => {
