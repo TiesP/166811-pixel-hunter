@@ -1,12 +1,13 @@
 import {getState, setState, getData} from './data';
 
-const stateModule = {};
+let stateModule = {};
 
 export function newGame() {
   const newState = getData().initialState;
   newState.answers = [];
   newState.result = {};
   setState(newState);
+  stateModule = {};
 }
 
 function changeState(state, key, value) {

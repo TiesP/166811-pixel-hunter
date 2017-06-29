@@ -118,7 +118,12 @@ function getModule() {
   const levels = getData().levels;
   const curLevel = getState().curLevel;
   if (curLevel < levels.length) {
-    return getGameModule(levels[curLevel], getState());
+    const curModuleGame = getGameModule(levels[curLevel], getState());
+    // const items = Array.from(curModuleGame.querySelectorAll(`.game__option input`));
+    // items.forEach((item) => {
+    //   console.log(curLevel, item, item.name, item.checked);
+    // });
+    return curModuleGame;
   } else {
     return stats;
   }
@@ -131,4 +136,4 @@ function nextModule() {
 
 newGame();
 
-export default getModule();
+export default getModule;

@@ -2,7 +2,7 @@ import {getElementFromTemplate, changePageTemplate, addHandlerBackGreeting} from
 import footer from './components/footer';
 import header from './components/header';
 import game from './gameView';
-import {setState} from './data';
+import {newGame} from './game';
 
 const moduleRules = getElementFromTemplate(`
 ${header()}
@@ -27,8 +27,8 @@ ${footer}
 
 const rulesButton = moduleRules.querySelector(`.rules__button`);
 rulesButton.addEventListener(`click`, () => {
-  setState(0, `curLevel`);
-  changePageTemplate(game);
+  newGame();
+  changePageTemplate(game());
 });
 
 const rulesInput = moduleRules.querySelector(`.rules__input`);
