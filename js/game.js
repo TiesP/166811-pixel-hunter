@@ -9,18 +9,18 @@ export function newGame() {
   setState(newState);
 }
 
-export function nextLevel(state) {
-  const newLevel = state.curLevel + 1;
+function changeState(state, key, value) {
   state = Object.assign({}, state);
-  state.curLevel = newLevel;
+  state[key] = value;
   return state;
 }
 
+export function nextLevel(state) {
+  return changeState(state, `curLevel`, state.curLevel + 1);
+}
+
 export function reduceLives(state) {
-  const newLives = state.lives - 1;
-  state = Object.assign({}, state);
-  state.lives = newLives;
-  return state;
+  return changeState(state, `lives`, state.lives - 1);
 }
 
 function checkCorrect() {
@@ -50,23 +50,17 @@ export function checkComplete() {
 }
 
 export function addAnswer(state, time, correct) {
-  const answers = state.answers;
-  const newAnswers = answers.concat({time, correct});
-  state = Object.assign({}, state);
-  state.answers = newAnswers;
-  return state;
+  const answers = state.answers.concat({time, correct});
+  return changeState(state, `answers`, answers);
 }
 
 export function fillResults(state) {
   const result = {};
-  const answers = state.answers;
-  const total = answers.reduce((r, item) => {
+  const total = state.answers.reduce((r, item) => {
     return r + (item.correct ? (100 + checkBonus(item.time)) : 0);
   }, 0);
   result.total = total;
-  state = Object.assign({}, state);
-  state.result = result;
-  return state;
+  return changeState(state, `result`, result);
 }
 
 export function checkBonus(time) {
