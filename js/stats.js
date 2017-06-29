@@ -57,24 +57,25 @@ function getTableBonuses(item, i) {
 }
 
 function getSumBonuses(bonuses) {
-  return bonuses.reduce((r, item) => {
+  return Object.keys(bonuses).reduce((r, key) => {
+    let item = bonuses[key];
     return r + (item.points * item.count);
   }, 0);
 }
 
 function getBonuses(bonuses) {
-  return bonuses.reduce((r, item) => {
-    return r + getRowBonus(item);
+  return Object.keys(bonuses).reduce((r, key) => {
+    return r + getRowBonus(key, bonuses[key]);
   }, ``);
 }
 
-function getRowBonus(item) {
+function getRowBonus(type, item) {
   return `
     <tr>
     <td></td>
-    <td class="result__extra">${getBonusName(item.type)}:</td>
-    <td class="result__extra">${item.count}&nbsp;<span class="stats__result stats__result--${item.type}"></span></td>
-    <td class="result__points">×&nbsp;${(item.type === `slow`) ? -item.points : item.points}</td>
+    <td class="result__extra">${getBonusName(type)}:</td>
+    <td class="result__extra">${item.count}&nbsp;<span class="stats__result stats__result--${type}"></span></td>
+    <td class="result__points">×&nbsp;${(type === `slow`) ? -item.points : item.points}</td>
     <td class="result__total">${item.points * item.count}</td>
     </tr>
   `;

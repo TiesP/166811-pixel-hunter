@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {getState} from './data';
-import {reduceLives, newGame, addAnswer, checkBonus, fillResults, nextLevel} from './game';
+import {reduceLives, newGame, addAnswer, checkBonus, fillResults, nextLevel, addBonus, getStats} from './game';
 
 describe(`Game`, () => {
 
@@ -35,24 +35,58 @@ describe(`Game`, () => {
 
   });
 
+  describe(`Stats`, () => {
+
+    it(`getStats`, () => {
+      assert.equal(getStats(9, true), `fast`);
+    });
+
+    it(`add 1 answer`, () => {
+      let state = {};
+      state = addAnswer(state, 9, true);
+      assert.deepEqual(state.stats, [`fast`]);
+    });
+
+  });
+
   describe(`Answers`, () => {
 
     it(`add 1 answer`, () => {
-      newGame();
-      const state = getState();
-      assert.equal(state.answers.length, 0);
-      const newState = addAnswer(state, 20, true);
-      assert.equal(newState.answers.length, 1);
+      let state = {};
+      state = addAnswer(state, 20, true);
+      assert.equal(state.answers.length, 1);
     });
 
     it(`add 10 answer`, () => {
-      newGame();
-      let state = getState();
-      assert.equal(state.answers.length, 0);
+      let state = {};
       for (let i = 1; i <= 10; i++) {
         state = addAnswer(state, i * 3, true);
       }
       assert.equal(state.answers.length, 10);
+    });
+
+  });
+
+  describe(`Bonuses`, () => {
+
+    it(`add first bonus`, () => {
+      const bonuses = {};
+      addBonus(bonuses, 50, `fast`);
+      assert.deepEqual(bonuses, {fast: {count: 1, points: 50}});
+    });
+
+    it(`add 2 dif bonus`, () => {
+      const bonuses = {};
+      addBonus(bonuses, 50, `fast`);
+      addBonus(bonuses, 50, `fast`);
+      addBonus(bonuses, -50, `slow`);
+      assert.deepEqual(bonuses, {fast: {count: 2, points: 50}, slow: {count: 1, points: -50}});
+    });
+
+    it(`add null bonus`, () => {
+      const bonuses = {};
+      addBonus(bonuses, 0);
+      assert.deepEqual(bonuses, {});
     });
 
   });
@@ -79,30 +113,30 @@ describe(`Game`, () => {
     });
 
     it(`1 quick correct answer - check total`, () => {
-      newGame();
-      let state = getState();
+      let state = {};
       state = addAnswer(state, 8, true);
-      state = fillResults(state);
-      assert.equal(state.result.total, 150);
+      const result = fillResults(state);
+      assert.equal(result.total, 100);
+      assert.deepEqual(result.bonuses, {fast: {count: 1, points: 50}});
     });
 
     it(`3 quick answer - check total`, () => {
-      newGame();
-      let state = getState();
+      let state = {};
       state = addAnswer(state, 3, false);
       state = addAnswer(state, 6, true);
       state = addAnswer(state, 9, false);
-      state = fillResults(state);
-      assert.equal(state.result.total, 150);
+      const result = fillResults(state);
+      assert.equal(result.total, 100);
+      assert.deepEqual(result.bonuses, {fast: {count: 1, points: 50}});
     });
 
     it(`10 different answer - check total`, () => {
-      newGame();
-      let state = getState();
+      let state = {};
       for (let i = 1; i <= 10; i++) {
         state = addAnswer(state, i * 3, (i % 2) ? false : true);
       }
-      state = fillResults(state);
+      assert.deepEqual(state.stats, [`wrong`, `fast`, `wrong`, `correct`, `wrong`, `correct`, `wrong`, `slow`, `wrong`, `slow`]);
+      const result = fillResults(state);
       // 3 false
       // 6 true
       // 9 false
@@ -113,7 +147,9 @@ describe(`Game`, () => {
       // 24 true
       // 27 false
       // 30 true
-      assert.equal(state.result.total, 0 + 150 + 0 + 100 + 0 + 100 + 0 + (100 - 50) + 0 + (100 - 50));
+      assert.equal(result.total, 500);
+      assert.deepEqual(result.bonuses, {fast: {count: 1, points: 50}, slow: {count: 2, points: -50}});
+      assert.deepEqual(result.stats, [`wrong`, `fast`, `wrong`, `correct`, `wrong`, `correct`, `wrong`, `slow`, `wrong`, `slow`]);
     });
 
   });

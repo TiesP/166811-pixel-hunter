@@ -44,11 +44,11 @@ const data = Object.freeze({
       total: 900,
       points: 100,
       stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
-      bonuses: [
-        {type: `fast`, count: 1, points: 50},
-        {type: `heart`, count: 2, points: 50},
-        {type: `slow`, count: 2, points: -50}
-      ]
+      bonuses: {
+        fast: {count: 1, points: 50},
+        heart: {count: 2, points: 50},
+        slow: {count: 2, points: -50}
+      }
     },
     {
       total: 0,
@@ -58,20 +58,23 @@ const data = Object.freeze({
       total: 900,
       points: 100,
       stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
-      bonuses: [
-        {type: `heart`, count: 2, points: 50}
-      ]
+      bonuses: {
+        heart: {count: 2, points: 50}
+      }
     }
   ],
   'initialState': {
     curLevel: 0,
     lives: 3,
-    timer: 30,
-    answers: []
+    timer: 30
   },
   'rules': {
     correctAnswerPoints: 100,
-    additionalPoints: [{time: 9, points: 50}, {time: 20, points: 0}, {time: 30, points: -50}],
+    addPoints: [
+      {time: 9, points: 50, type: `fast`},
+      {time: 20, points: 0, type: `correct`},
+      {time: 30, points: -50, type: `slow`}
+    ],
     remainingLifePoints: 50
   }
 });
