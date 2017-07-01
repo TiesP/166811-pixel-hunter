@@ -1,9 +1,9 @@
 import StatsView from './stats-view';
 import {changeView} from '../utils';
-import App from '../main';
+import Application from '../main';
 import {getData} from '../data';
 
-class Stats {
+class StatsScreen {
   constructor(state = {answers: [], stats: []}) {
     this.result = this.fillResults(state);
     this.view = new StatsView(this.result);
@@ -13,7 +13,7 @@ class Stats {
     changeView(this.view);
 
     this.view.onPrevScreen = () => {
-      App.showGreeting();
+      Application.showWelcome();
     };
 
   }
@@ -68,4 +68,4 @@ class Stats {
 
 }
 
-export default Stats;
+export default StatsScreen;

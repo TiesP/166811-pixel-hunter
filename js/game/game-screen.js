@@ -1,9 +1,9 @@
 import GameView from './game-view';
 import {changeView} from '../utils';
-import App from '../main';
+import Application from '../main';
 import {getData} from '../data';
 
-class Game {
+class GameScreen {
 
   constructor() {
     this.MAX_LEVEL = getData().levels.length - 1;
@@ -16,7 +16,7 @@ class Game {
     changeView(this.view);
 
     this.view.onPrevScreen = () => {
-      App.showGreeting();
+      Application.showWelcome();
     };
 
     this.view.checkAnswer = (item) => {
@@ -54,7 +54,7 @@ class Game {
     if (this.level.type === `twoPicture`) {
       return this.checkCorrect();
     } else {
-      const type = App.imgs[item.dataset.url];
+      const type = Application.imgs[item.dataset.url];
       if (this.level.type === `threePicture`) {
         return (type === `paint`);
       } else {
@@ -65,7 +65,7 @@ class Game {
 
   answerComplete(item) {
     if (this.level.type === `twoPicture`) {
-      const type = App.imgs[item.dataset.url];
+      const type = Application.imgs[item.dataset.url];
       this.stateModule[item.name] = (type === item.value);
       return (Object.keys(this.stateModule).length === 2);
     } else {
@@ -82,7 +82,7 @@ class Game {
   }
 
   showStats() {
-    App.showStats({
+    Application.showStats({
       answers: this.answers,
       stats: this.stats,
       lives: this.state.lives
@@ -176,4 +176,4 @@ class Game {
 
 }
 
-export default new Game();
+export default new GameScreen();
