@@ -9,7 +9,7 @@ export default class GameView extends AbstractView {
   constructor(props) {
     super(props);
     this.lives = props.lives;
-    this.timer = props.timer;
+    // this.timer = props.timer;
     this.level = props.level;
     this.stats = props.stats;
   }
@@ -18,7 +18,7 @@ export default class GameView extends AbstractView {
     return `
     ${header({
       lives: this.lives,
-      timer: this.timer
+      timer: this.getTime
     })}
     ${this.getLevelTemplate(this.level)}
     ${footer}
@@ -63,6 +63,10 @@ export default class GameView extends AbstractView {
         });
       });
 
+  }
+
+  setTime(time) {
+    this.element.querySelector(`.game__timer`).innerText = time;
   }
 
   onPrevScreen() {}

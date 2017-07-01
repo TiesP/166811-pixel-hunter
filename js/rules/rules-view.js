@@ -1,6 +1,7 @@
 import AbstractView from '../view';
 import footer from '../components/footer';
 import header from '../components/header';
+import {getData} from '../data';
 
 export default class IntroView extends AbstractView {
 
@@ -13,7 +14,7 @@ export default class IntroView extends AbstractView {
         src="img/photo_icon.png" width="16" height="16"> или рисунок <img
         src="img/paint_icon.png" width="16" height="16" alt="">.<br>
         Фотографиями или рисунками могут быть оба изображения.<br>
-        На каждую попытку отводится 30 секунд.<br>
+        На каждую попытку отводится ${getData().rules.timer} секунд.<br>
         Ошибиться можно не более 3 раз.<br>
         <br>
         Готовы?

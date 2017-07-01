@@ -11,29 +11,36 @@ class GameScreen {
   }
 
   init() {
+    this.tickTimer();
     this.stateModule = {};
 
     changeView(this.view);
 
     this.view.onPrevScreen = () => {
+      this.stopTimer();
       Application.showWelcome();
     };
 
     this.view.checkAnswer = (item) => {
       if (this.answerComplete(item)) {
         const correct = this.answerCorrect(item);
-        this.answers = this.addAnswer(this.answers, 0, correct);
-        if (!correct) {
-          this.state = this.reduceLives(this.state);
-          if (this.state.lives === 0) {
-            this.showStats();
-            return;
-          }
-        }
-        this.nextScreen();
+        this.changeScreen(correct);
       }
     };
 
+  }
+
+  changeScreen(correct) {
+    this.answers = this.addAnswer(this.answers, this.state.time, correct);
+    this.stopTimer();
+    if (!correct) {
+      this.state = this.reduceLives(this.state);
+      if (this.state.lives === 0) {
+        this.showStats();
+        return;
+      }
+    }
+    this.nextScreen();
   }
 
   initialization() {
@@ -44,10 +51,28 @@ class GameScreen {
 
     this.view = new GameView({
       lives: this.state.lives,
-      timer: this.state.timer,
       level: this.level,
       stats: this.stats
     });
+  }
+
+  tickTimer() {
+    clearTimeout(this.timeout);
+
+    const timeForLevel = getData().rules.timer;
+    this.view.setTime(timeForLevel - this.state.time);
+    this.state = this.changeState(this.state, `time`, this.state.time + 1);
+    if (this.state.time > timeForLevel) {
+      this.changeScreen(false);
+      return;
+    }
+
+    this.timeout = setTimeout(() => this.tickTimer(), 1000);
+  }
+
+  stopTimer() {
+    clearTimeout(this.timeout);
+    this.state = this.changeState(this.state, `time`, 0);
   }
 
   answerCorrect(item) {
@@ -94,7 +119,6 @@ class GameScreen {
 
     this.view = new GameView({
       lives: this.state.lives,
-      timer: this.state.timer,
       level: this.level,
       stats: this.stats
     });

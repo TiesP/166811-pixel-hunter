@@ -1,7 +1,6 @@
 export default function header(level) {
-
   const htmlLevel = (!level) ? `` : `
-    <h1 class="game__timer">${level.timer}</h1>
+    <h1 class="game__timer"></h1>
     <div class="game__lives">
       ${
         new Array(3 - level.lives)
