@@ -1,5 +1,3 @@
-import greeting from './greeting';
-
 const main = document.querySelector(`main.central`);
 
 export function changePageTemplate(template) {
@@ -7,18 +5,13 @@ export function changePageTemplate(template) {
   main.appendChild(template);
 }
 
+export function changeView(view) {
+  main.innerHTML = ``;
+  main.appendChild(view.element);
+}
+
 export function getElementFromTemplate(text) {
   const node = document.createElement(`div`);
   node.innerHTML = text;
   return node;
-}
-
-export function addHandlerBackGreeting(curModule) {
-  const itemBack = curModule.querySelector(`.back`);
-  if (itemBack) {
-    itemBack.addEventListener(`click`, () => {
-      changePageTemplate(greeting);
-    });
-  }
-  return curModule;
 }

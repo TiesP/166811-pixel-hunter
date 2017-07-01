@@ -2,26 +2,70 @@ const data = Object.freeze({
   'levels': [
     {
       type: `twoPicture`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`, `unknown`],
       pictures: [
-        {isPhoto: false, url: `https://k42.kn3.net/CF42609C8.jpg`},
-        {isPhoto: true, url: `http://i.imgur.com/1KegWPz.jpg`}
+        {type: `photo`, url: `https://k61.kn3.net/C/0/F/0/8/F/B2D.jpg`},
+        {type: `paint`, url: `https://k61.kn3.net/4/3/D/8/0/2/6DA.jpg`}
       ]
     },
     {
-      type: `onePicture`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
+      type: `twoPicture`,
       pictures: [
-        {isPhoto: false, url: `https://k42.kn3.net/D2F0370D6.jpg`}
+        {type: `paint`, url: `https://k60.kn3.net/5/E/E/A/3/3/59D.jpg`},
+        {type: `photo`, url: `https://k61.kn3.net/5/6/A/3/3/F/266.jpg`}
+      ]
+    },
+    {
+      type: `twoPicture`,
+      pictures: [
+        {type: `photo`, url: `https://k60.kn3.net/5/1/1/5/2/9/DBC.jpg`},
+        {type: `paint`, url: `https://k60.kn3.net/F/3/C/5/A/6/E29.jpg`}
+      ]
+    },
+    {
+      type: `twoPicture`,
+      pictures: [
+        {type: `paint`, url: `https://k42.kn3.net/CF42609C8.jpg`},
+        {type: `photo`, url: `http://i.imgur.com/1KegWPz.jpg`}
       ]
     },
     {
       type: `threePicture`,
-      stats: [`wrong`, `slow`, `fast`, `correct`, `wrong`, `unknown`, `slow`, `unknown`, `fast`, `unknown`],
       pictures: [
-        {isPhoto: true, url: `https://i.imgur.com/DiHM5Zb.jpg`},
-        {isPhoto: true, url: `http://i.imgur.com/DKR1HtB.jpg`},
-        {isPhoto: false, url: `https://k32.kn3.net/5C7060EC5.jpg`}
+        {type: `photo`, url: `https://k60.kn3.net/6/6/2/8/8/6/5BC.jpg`},
+        {type: `photo`, url: `https://k60.kn3.net/1/6/9/9/B/F/BCF.jpg`},
+        {type: `paint`, url: `https://k60.kn3.net/5/7/7/8/A/0/CC2.jpg`}
+      ]
+    },
+    {
+      type: `onePicture`,
+      pictures: [
+        {type: `photo`, url: `https://k60.kn3.net/0/F/E/3/B/F/2A4.jpg`}
+      ]
+    },
+    {
+      type: `onePicture`,
+      pictures: [
+        {type: `paint`, url: `https://k61.kn3.net/0/0/0/6/F/6/E02.jpg`}
+      ]
+    },
+    {
+      type: `onePicture`,
+      pictures: [
+        {type: `paint`, url: `https://k60.kn3.net/0/B/B/E/C/E/F63.jpg`}
+      ]
+    },
+    {
+      type: `onePicture`,
+      pictures: [
+        {type: `paint`, url: `https://k42.kn3.net/D2F0370D6.jpg`}
+      ]
+    },
+    {
+      type: `threePicture`,
+      pictures: [
+        {type: `photo`, url: `https://i.imgur.com/DiHM5Zb.jpg`},
+        {type: `photo`, url: `http://i.imgur.com/DKR1HtB.jpg`},
+        {type: `paint`, url: `https://k32.kn3.net/5C7060EC5.jpg`}
       ]
     }
   ],
@@ -81,19 +125,4 @@ const data = Object.freeze({
 
 export function getData() {
   return data;
-}
-
-let state;
-setState(getData().initialState);
-
-export function getState() {
-  return state;
-}
-
-export function setState(newValue, key) {
-  if (key) {
-    state[key] = newValue;
-  } else {
-    state = Object.assign({}, newValue);
-  }
 }
