@@ -8,8 +8,7 @@ import NewGameScreen from './game/game-screen';
 import {getData} from './data';
 
 const RouteID = {
-  INTRO: ``,
-  WELCOME: `start`,
+  WELCOME: ``,
   RULES: `rules`,
   GAME: `game`,
   SCOREBOARD: `stats`
@@ -18,16 +17,53 @@ const RouteID = {
 class Application {
   constructor() {
     this.imgs = {};
-    this.init();
+    this.loadData();
   }
 
-  init() {
+  loadData() {
+    IntroScreen.init();
+
+    const DATA_URL = `https://intensive-ecmascript-server-btfgudlkpi.now.sh/pixel-hunter/questions`;
+    const that = this;
+    fetch(DATA_URL)
+      .then(function (resp) {
+        const lev = resp.json();
+        return lev;
+      })
+      .then(function (data) {
+        const levels = data.map((item) => {
+          return {type: that.getType(item.type), pictures: that.getPictures(item.answers)};
+        });
+        that.init(levels);
+      });
+  }
+
+  getPictures(answers) {
+    return answers.map((answer) => {
+      return {
+        type: (answer.type === `painting`) ? `paint` : answer.type,
+        url: answer.image.url
+      };
+    });
+  }
+
+  getType(apiType) {
+    if (apiType === `two-of-two`) {
+      return `twoPicture`;
+    } else if (apiType === `tinder-like`) {
+      return `onePicture`;
+    } else if (apiType === `one-of-three`) {
+      return `threePicture`;
+    }
+    return ``;
+  }
+
+  init(levels) {
     this.routes = {
-      [RouteID.INTRO]: IntroScreen,
       [RouteID.WELCOME]: WelcomeScreen,
       [RouteID.RULES]: RulesScreen,
       [RouteID.SCOREBOARD]: new StatsScreen(),
-      [RouteID.GAME]: new NewGameScreen(getData().levels)
+      [RouteID.GAME]: new NewGameScreen(levels)
     };
 
     window.addEventListener(`hashchange`, () => {
@@ -51,10 +87,6 @@ class Application {
       return r;
     }, {});
     return imgs;
-  }
-
-  showIntro() {
-    location.hash = RouteID.INTRO;
   }
 
   showWelcome() {
