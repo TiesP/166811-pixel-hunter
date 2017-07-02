@@ -10,8 +10,9 @@ import {getData} from './data';
 const RouteID = {
   INTRO: ``,
   WELCOME: `start`,
+  RULES: `rules`,
   GAME: `game`,
-  SCOREBOARD: `scores`
+  SCOREBOARD: `stats`
 };
 
 class Application {
@@ -24,19 +25,22 @@ class Application {
     this.routes = {
       [RouteID.INTRO]: IntroScreen,
       [RouteID.WELCOME]: WelcomeScreen,
-      [RouteID.SCOREBOARD]: StatsScreen,
+      [RouteID.RULES]: RulesScreen,
+      [RouteID.SCOREBOARD]: new StatsScreen(),
       [RouteID.GAME]: new NewGameScreen(getData().levels)
     };
 
-    window.onhashchange = () => {
+    window.addEventListener(`hashchange`, () => {
       this.changeRoute(location.hash.replace(`#`, ``));
-    };
+    });
 
-    this.showIntro();
+    this.imgs = this.fillListImg();
+    this.changeRoute(location.hash.replace(`#`, ``));
   }
 
   changeRoute(route = ``) {
-    this.routes[route].init();
+    const arrHash = route.split(`=`, 2);
+    this.routes[arrHash[0]].init();
   }
 
   fillListImg() {
@@ -51,7 +55,6 @@ class Application {
 
   showIntro() {
     location.hash = RouteID.INTRO;
-    this.imgs = this.fillListImg();
   }
 
   showWelcome() {
@@ -59,12 +62,12 @@ class Application {
   }
 
   showRules() {
-    RulesScreen.init();
+    location.hash = RouteID.RULES;
   }
 
   showStats(state) {
-    const newStats = new StatsScreen(state);
-    newStats.init();
+    const param = encodeURIComponent(JSON.stringify(state));
+    location.hash = `${RouteID.SCOREBOARD}=${param}`;
   }
 
   showGame() {

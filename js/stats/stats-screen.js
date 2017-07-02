@@ -6,12 +6,19 @@ import {getData} from '../data';
 class StatsScreen {
   constructor(state = {answers: [], lives: 0}) {
     this.result = this.fillResults(state);
-    this.view = new StatsView(this.result);
   }
 
   init() {
-    changeView(this.view);
+    const arrHash = location.hash.split(`=`, 2);
+    if (arrHash.length === 2) {
+      let stateHash = decodeURIComponent(arrHash[1]);
+      stateHash = JSON.parse(stateHash);
 
+      this.result = this.fillResults(stateHash);
+    }
+
+    this.view = new StatsView(this.result);
+    changeView(this.view);
     this.view.onPrevScreen = () => {
       Application.showWelcome();
     };
