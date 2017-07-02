@@ -11,7 +11,9 @@
   },
   "devDependencies": {
     "autoprefixer": "6.7.7",
+    "babel-plugin-external-helpers": "6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
+    "babel-preset-env": "1.5.2",
     "babel-register": "6.24.1",
     "browser-sync": "2.18.8",
     "css-mqpacker": "6.0.0",
@@ -27,14 +29,21 @@
     "gulp-postcss": "7.0.0",
     "gulp-rename": "1.2.2",
     "gulp-sass": "3.1.0",
-    "gulp-sourcemaps": "2.6.0"
+    "gulp-sourcemaps": "2.6.0",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-node-resolve": "3.0.0"
   },
   "engines": {
     "node": "6.10"
   },
   "babel": {
     "plugins": [
-    "transform-es2015-modules-commonjs"
-  ]
+      "transform-es2015-modules-commonjs"
+    ]
+  },
+  "dependencies": {
+    "babel-polyfill": "6.23.0",
+    "whatwg-fetch": "2.0.3"
   }
 }

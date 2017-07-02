@@ -1,7 +1,7 @@
 import AbstractView from '../view';
 import footer from '../components/footer';
 import header from '../components/header';
-import lineStats from '../components/lineStats';
+import getListStats from '../components/lineStats';
 import {getData} from '../data';
 
 export default class GameView extends AbstractView {
@@ -11,7 +11,7 @@ export default class GameView extends AbstractView {
     this.lives = props.lives;
     // this.timer = props.timer;
     this.level = props.level;
-    this.stats = props.stats;
+    // this.stats = props.stats;
   }
 
   get template() {
@@ -69,6 +69,10 @@ export default class GameView extends AbstractView {
     this.element.querySelector(`.game__timer`).innerText = time;
   }
 
+  setStats(stats) {
+    this.element.querySelector(`div.stats`).innerHTML = getListStats(stats);
+  }
+
   onPrevScreen() {}
 
   checkAnswer(item) {}
@@ -90,7 +94,8 @@ export default class GameView extends AbstractView {
         <form class="game__content ${getData().types[level.type].className}">
           ${this.getOptionResults(level.pictures, level.type)}
         </form>
-        ${lineStats(this.stats)}
+        <div class="stats">
+        </div>
       </div>
      `;
   }

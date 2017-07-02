@@ -1,7 +1,8 @@
 import AbstractView from '../view';
 import footer from '../components/footer';
 import header from '../components/header';
-import getLineStats from '../components/lineStats';
+import getListStats from '../components/lineStats';
+import {getStats} from '../stats/stats';
 
 export default class StatsView extends AbstractView {
   constructor(result) {
@@ -46,7 +47,9 @@ export default class StatsView extends AbstractView {
         <tr>
           <td class="result__number">${i + 1}.</td>
           <td>
-            ${getLineStats(item.stats)}
+          <div class="stats">
+            ${getListStats(getStats(item.answers))}
+          </div>
           </td>
           <td class="result__total"></td>
           <td class="result__total  result__total--final">fail</td>
@@ -59,7 +62,7 @@ export default class StatsView extends AbstractView {
         <tr>
           <td class="result__number">${i + 1}.</td>
           <td colspan="2">
-            ${getLineStats(item.stats)}
+            ${getListStats(getStats(item.answers))}
           </td>
           <td class="result__points">×&nbsp;${item.points}</td>
           <td class="result__total">${item.total}</td>

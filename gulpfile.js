@@ -15,6 +15,10 @@ const rollup = require('gulp-better-rollup');
 const sourcemaps = require('gulp-sourcemaps');
 const mocha = require('gulp-mocha'); // Добавим установленный gulp-mocha плагин
 
+const resolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const babel = require('rollup-plugin-babel');
+
 gulp.task('style', function() {
   gulp.src('sass/style.scss')
     .pipe(plumber())
@@ -38,12 +42,12 @@ gulp.task('style', function() {
     .pipe(gulp.dest('build/css'));
 });
 
-gulp.task('test', function () {
+gulp.task('test', function() {
   return gulp
     .src(['js/**/*.test.js'], { read: false })
     .pipe(mocha({
       compilers: ['js:babel-register'], // Включим поддержку "import/export" в Mocha тестах
-      reporter: 'spec'       // Вид в котором я хочу отображать результаты тестирования
+      reporter: 'spec' // Вид в котором я хочу отображать результаты тестирования
     }));
 });
 
@@ -51,11 +55,28 @@ gulp.task('scripts', function() {
   return gulp.src('js/main.js')
     .pipe(plumber())
     .pipe(sourcemaps.init())
-    .pipe(rollup({}, 'iife'))
+    .pipe(rollup({
+      plugins: [
+        // resolve node_modules
+        resolve({browser: true}),
+        // resolve commonjs imports
+        commonjs(),
+        // use babel to transpile into ES5
+        babel({
+          babelrc: false,
+          exclude: 'node_modules/**',
+          presets: [
+            ['env', { modules: false }]
+          ],
+          plugins: [
+            'external-helpers',
+          ]
+        })
+]
+    }, 'iife'))
     .pipe(sourcemaps.write(''))
     .pipe(gulp.dest('build/js'));
 });
-
 
 gulp.task('imagemin', ['copy'], function() {
   return gulp.src('build/img/**/*.{jpg,png,gif}')

@@ -4,14 +4,21 @@ import Application from '../main';
 import {getData} from '../data';
 
 class StatsScreen {
-  constructor(state = {answers: [], stats: []}) {
+  constructor(state = {answers: [], lives: 0}) {
     this.result = this.fillResults(state);
-    this.view = new StatsView(this.result);
   }
 
   init() {
-    changeView(this.view);
+    const arrHash = location.hash.split(`=`, 2);
+    if (arrHash.length === 2) {
+      let stateHash = decodeURIComponent(arrHash[1]);
+      stateHash = JSON.parse(stateHash);
 
+      this.result = this.fillResults(stateHash);
+    }
+
+    this.view = new StatsView(this.result);
+    changeView(this.view);
     this.view.onPrevScreen = () => {
       Application.showWelcome();
     };
@@ -23,7 +30,7 @@ class StatsScreen {
     const bonuses = {};
     const total = state.answers.reduce((r, item) => {
       if (item.correct) {
-        this.checkBonus(item.time, bonuses);
+        this.checkAddBonus(item.time, bonuses);
         return r + getData().rules.correctAnswerPoints;
       } else {
         return r;
@@ -32,14 +39,14 @@ class StatsScreen {
     this.addBonus(bonuses, getData().rules.remainingLifePoints, `heart`, state.lives);
 
     result.total = total;
-    result.bonuses = bonuses;
-    result.stats = state.stats;
     result.points = getData().rules.correctAnswerPoints;
+    result.bonuses = bonuses;
+    result.answers = state.answers;
 
     return result;
   }
 
-  checkBonus(time, bonuses) {
+  checkAddBonus(time, bonuses) {
     const addPoints = getData().rules.addPoints;
     for (let i = 0; i < addPoints.length; i++) {
       if (time <= addPoints[i].time) {
@@ -57,7 +64,7 @@ class StatsScreen {
     }
     if (count !== 0) {
       bonuses[type] = {count, points};
-    } else if (points !== 0) {
+    } else if (points !== 0 && type !== `heart`) {
       if (!bonuses[type]) {
         bonuses[type] = {count: 1, points};
       } else {

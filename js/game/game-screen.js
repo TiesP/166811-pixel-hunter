@@ -2,18 +2,35 @@ import GameView from './game-view';
 import {changeView} from '../utils';
 import Application from '../main';
 import {getData} from '../data';
+import {getStats} from '../stats/stats';
 
 class GameScreen {
 
-  constructor() {
-    this.MAX_LEVEL = getData().levels.length - 1;
-    this.initialization();
+  constructor(levels) {
+
+    this.levels = levels;
+
   }
 
   init() {
+    this.state = this.setState(getData().initialState);
+    this.answers = [];
+
+    this.update();
+  }
+
+  update() {
+    this.level = this.levels[this.state.curLevel];
+
+    this.view = new GameView({
+      lives: this.state.lives,
+      level: this.level
+    });
+
     this.tickTimer();
     this.stateModule = {};
 
+    this.view.setStats(getStats(this.answers, this.levels.length));
     changeView(this.view);
 
     this.view.onPrevScreen = () => {
@@ -41,19 +58,6 @@ class GameScreen {
       }
     }
     this.nextScreen();
-  }
-
-  initialization() {
-    this.state = this.setState(getData().initialState);
-    this.answers = [];
-    this.stats = [];
-    this.level = getData().levels[this.state.curLevel];
-
-    this.view = new GameView({
-      lives: this.state.lives,
-      level: this.level,
-      stats: this.stats
-    });
   }
 
   tickTimer() {
@@ -99,7 +103,7 @@ class GameScreen {
   }
 
   nextScreen() {
-    if (this.state.curLevel < this.MAX_LEVEL) {
+    if (this.state.curLevel < (this.levels.length - 1)) {
       this.nextLevel();
     } else {
       this.showStats();
@@ -109,21 +113,13 @@ class GameScreen {
   showStats() {
     Application.showStats({
       answers: this.answers,
-      stats: this.stats,
       lives: this.state.lives
     });
   }
 
   nextLevel() {
     this.state = this.increaseLevel(this.state);
-
-    this.view = new GameView({
-      lives: this.state.lives,
-      level: this.level,
-      stats: this.stats
-    });
-
-    this.init();
+    this.update();
   }
 
   increaseLevel(state) {
@@ -132,7 +128,7 @@ class GameScreen {
       curLevel = 0;
     }
     curLevel = curLevel + 1;
-    this.level = getData().levels[curLevel];
+    this.level = this.levels[curLevel];
     return this.changeState(state, `curLevel`, curLevel);
   }
 
@@ -161,31 +157,7 @@ class GameScreen {
     if (!answers) {
       answers = [];
     }
-    const newAnswers = answers.concat({time, correct});
-
-    const newStats = this.addStat(this.stats, time, correct);
-    this.stats = newStats;
-    return newAnswers;
-  }
-
-  addStat(stats, time, correct) {
-    if (!stats) {
-      stats = [];
-    }
-    return stats.concat(this.getStats(correct, time));
-  }
-
-  getStats(correct, time) {
-    if (!correct) {
-      return `wrong`;
-    }
-    const addPoints = getData().rules.addPoints;
-    for (let i = 0; i < addPoints.length; i++) {
-      if (time <= addPoints[i].time) {
-        return addPoints[i].type;
-      }
-    }
-    return `unknown`;
+    return answers.concat({time, correct});
   }
 
   checkCorrect() {
@@ -200,4 +172,4 @@ class GameScreen {
 
 }
 
-export default new GameScreen();
+export default GameScreen;

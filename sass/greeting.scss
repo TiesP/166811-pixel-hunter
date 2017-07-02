@@ -16,6 +16,16 @@
   color: $main-red-color;
 
   text-align: center;
+
+  cursor: pointer;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+
+  &:active {
+    color: $link-active-color;
+  }
 }
 
 .greeting__logo {
