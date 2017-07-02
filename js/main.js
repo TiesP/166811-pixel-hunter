@@ -5,7 +5,6 @@ import WelcomeScreen from './greeting/greeting-screen';
 import RulesScreen from './rules/rules-screen';
 import StatsScreen from './stats/stats-screen';
 import NewGameScreen from './game/game-screen';
-import {getData} from './data';
 
 const RouteID = {
   WELCOME: ``,
@@ -17,6 +16,7 @@ const RouteID = {
 class Application {
   constructor() {
     this.imgs = {};
+    this.levels = [];
     this.loadData();
   }
 
@@ -70,6 +70,7 @@ class Application {
       this.changeRoute(location.hash.replace(`#`, ``));
     });
 
+    this.levels = levels;
     this.imgs = this.fillListImg();
     this.changeRoute(location.hash.replace(`#`, ``));
   }
@@ -80,7 +81,7 @@ class Application {
   }
 
   fillListImg() {
-    const imgs = getData().levels.reduce((r, level) => {
+    const imgs = this.levels.reduce((r, level) => {
       level.pictures.forEach((img) => {
         r[img.url] = img.type;
       });
