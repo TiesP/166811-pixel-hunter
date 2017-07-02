@@ -120,7 +120,7 @@ const data = Object.freeze({
       {time: 30, points: -50, type: `slow`}
     ],
     remainingLifePoints: 50,
-    timer: 5
+    timer: 30
   }
 });
 
