@@ -20,6 +20,7 @@ class RulesScreen {
 
     this.view.onChangeName = (rulesButton, val) => {
       rulesButton.disabled = !val;
+      Application.setName(val);
     };
   }
 

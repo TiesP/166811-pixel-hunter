@@ -2,7 +2,7 @@ import GameView from './game-view';
 import {changeView} from '../utils';
 import Application from '../main';
 import {getData} from '../data';
-import {getStats} from '../stats/stats';
+import {getStats, fillResults} from '../stats/stats';
 
 class GameScreen {
 
@@ -111,10 +111,18 @@ class GameScreen {
   }
 
   showStats() {
-    Application.showStats({
+    const stateResult = {
       answers: this.answers,
       lives: this.state.lives
+    };
+
+    const result = fillResults(stateResult);
+    Application.saveResults({
+      stats: getStats(result.answers),
+      lives: result.lives
     });
+
+    Application.showStats(stateResult);
   }
 
   nextLevel() {

@@ -13,6 +13,8 @@ const RouteID = {
   SCOREBOARD: `stats`
 };
 
+const SERVER_URL = `https://intensive-ecmascript-server-btfgudlkpi.now.sh/pixel-hunter`;
+
 class Application {
   constructor() {
     this.imgs = {};
@@ -23,9 +25,8 @@ class Application {
   loadData() {
     IntroScreen.init();
 
-    const DATA_URL = `https://intensive-ecmascript-server-btfgudlkpi.now.sh/pixel-hunter/questions`;
     const that = this;
-    fetch(DATA_URL)
+    fetch(`${SERVER_URL}/questions`)
       .then(function (resp) {
         const lev = resp.json();
         return lev;
@@ -35,6 +36,27 @@ class Application {
           return {type: that.getType(item.type), pictures: that.getPictures(item.answers)};
         });
         that.init(levels);
+      });
+  }
+
+  getResults() {
+    return fetch(`${SERVER_URL}/stats/${this.name}`)
+      .then(function (resp) {
+        const lev = resp.json();
+        return lev;
+      });
+  }
+
+  saveResults(data) {
+    const requestSettings = {
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': `application/json`
+      },
+      method: `POST`
+    };
+    fetch(`${SERVER_URL}/stats/${this.name}`, requestSettings)
+      .then((resp) => {
       });
   }
 
@@ -75,6 +97,10 @@ class Application {
     this.changeRoute(location.hash.replace(`#`, ``));
   }
 
+  setName(name) {
+    this.name = name;
+  }
+
   changeRoute(route = ``) {
     const arrHash = route.split(`=`, 2);
     this.routes[arrHash[0]].init();
@@ -98,7 +124,7 @@ class Application {
     location.hash = RouteID.RULES;
   }
 
-  showStats(state) {
+  showStats(state = {answers: [], lives: 0}) {
     const param = encodeURIComponent(JSON.stringify(state));
     location.hash = `${RouteID.SCOREBOARD}=${param}`;
   }

@@ -5,9 +5,10 @@ import getListStats from '../components/lineStats';
 import {getStats} from '../stats/stats';
 
 export default class StatsView extends AbstractView {
-  constructor(result) {
+  constructor(result, results) {
     super();
     this.result = result;
+    this.results = results;
   }
 
   get template() {
@@ -33,7 +34,7 @@ export default class StatsView extends AbstractView {
   }
 
   getResults() {
-    const results = [this.result];
+    const results = [].concat(this.result, this.results);
     return results.reduce((r, item, i) => {
       return r + this.getTableBonuses(item, i);
     }, ``);
