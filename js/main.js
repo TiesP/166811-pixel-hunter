@@ -1,11 +1,11 @@
-import Intro from './intro/intro';
-import Greeting from './greeting/greeting';
-import Rules from './rules/rules';
-import Stats from './stats/stats';
-import Game from './game/game';
+import IntroScreen from './intro/intro-screen';
+import WelcomeScreen from './greeting/greeting-screen';
+import RulesScreen from './rules/rules-screen';
+import StatsScreen from './stats/stats-screen';
+import NewGameScreen from './game/game-screen';
 import {getData} from './data';
 
-class App {
+class Application {
   constructor() {
     this.imgs = {};
     this.init();
@@ -16,7 +16,7 @@ class App {
   }
 
   showIntro() {
-    Intro.init();
+    IntroScreen.init();
     this.imgs = this.fillListImg();
   }
 
@@ -31,24 +31,24 @@ class App {
     return imgs;
   }
 
-  showGreeting() {
-    Greeting.init();
+  showWelcome() {
+    WelcomeScreen.init();
   }
 
   showRules() {
-    Rules.init();
+    RulesScreen.init();
   }
 
   showStats(state) {
-    const newStats = new Stats(state);
+    const newStats = new StatsScreen(state);
     newStats.init();
   }
 
   showGame() {
-    Game.initialization();
-    Game.init();
+    NewGameScreen.initialization();
+    NewGameScreen.init();
   }
 
 }
 
-export default new App();
+export default new Application();

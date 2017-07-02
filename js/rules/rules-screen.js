@@ -1,8 +1,8 @@
 import RulesView from './rules-view';
 import {changeView} from '../utils';
-import App from '../main';
+import Application from '../main';
 
-class Intro {
+class RulesScreen {
   constructor() {
     this.view = new RulesView();
   }
@@ -11,11 +11,11 @@ class Intro {
     changeView(this.view);
 
     this.view.onNextScreen = () => {
-      App.showGame();
+      Application.showGame();
     };
 
     this.view.onPrevScreen = () => {
-      App.showGreeting();
+      Application.showWelcome();
     };
 
     this.view.onChangeName = (rulesButton, val) => {
@@ -25,4 +25,4 @@ class Intro {
 
 }
 
-export default new Intro();
+export default new RulesScreen();

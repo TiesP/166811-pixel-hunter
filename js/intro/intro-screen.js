@@ -1,8 +1,8 @@
 import IntroView from './intro-view';
 import {changeView} from '../utils';
-import App from '../main';
+import Application from '../main';
 
-class Intro {
+class IntroScreen {
   constructor() {
     this.view = new IntroView();
   }
@@ -11,10 +11,10 @@ class Intro {
     changeView(this.view);
 
     this.view.onNextScreen = () => {
-      App.showGreeting();
+      Application.showWelcome();
     };
   }
 
 }
 
-export default new Intro();
+export default new IntroScreen();

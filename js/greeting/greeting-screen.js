@@ -1,8 +1,8 @@
 import GreetingView from './greeting-view';
 import {changeView} from '../utils';
-import App from '../main';
+import Application from '../main';
 
-class Greeting {
+class GreetingScreen {
   constructor() {
     this.view = new GreetingView();
   }
@@ -11,10 +11,10 @@ class Greeting {
     changeView(this.view);
 
     this.view.onNextScreen = () => {
-      App.showRules();
+      Application.showRules();
     };
   }
 
 }
 
-export default new Greeting();
+export default new GreetingScreen();

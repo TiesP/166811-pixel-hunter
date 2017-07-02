@@ -110,7 +110,7 @@ const data = Object.freeze({
   'initialState': {
     curLevel: 0,
     lives: 3,
-    timer: 30
+    time: 0
   },
   'rules': {
     correctAnswerPoints: 100,
@@ -119,7 +119,8 @@ const data = Object.freeze({
       {time: 20, points: 0, type: `correct`},
       {time: 30, points: -50, type: `slow`}
     ],
-    remainingLifePoints: 50
+    remainingLifePoints: 50,
+    timer: 30
   }
 });
 
