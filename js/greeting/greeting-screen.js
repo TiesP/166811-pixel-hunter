@@ -13,6 +13,10 @@ class GreetingScreen {
     this.view.onNextScreen = () => {
       Application.showRules();
     };
+
+    this.view.onStatsScreen = () => {
+      Application.showStats();
+    };
   }
 
 }

@@ -1,9 +1,18 @@
+import 'babel-polyfill';
+import 'whatwg-fetch';
 import IntroScreen from './intro/intro-screen';
 import WelcomeScreen from './greeting/greeting-screen';
 import RulesScreen from './rules/rules-screen';
 import StatsScreen from './stats/stats-screen';
 import NewGameScreen from './game/game-screen';
 import {getData} from './data';
+
+const RouteID = {
+  INTRO: ``,
+  WELCOME: `start`,
+  GAME: `game`,
+  SCOREBOARD: `scores`
+};
 
 class Application {
   constructor() {
@@ -12,17 +21,26 @@ class Application {
   }
 
   init() {
+    this.routes = {
+      [RouteID.INTRO]: IntroScreen,
+      [RouteID.WELCOME]: WelcomeScreen,
+      [RouteID.SCOREBOARD]: StatsScreen,
+      [RouteID.GAME]: new NewGameScreen(getData().levels)
+    };
+
+    window.onhashchange = () => {
+      this.changeRoute(location.hash.replace(`#`, ``));
+    };
+
     this.showIntro();
   }
 
-  showIntro() {
-    IntroScreen.init();
-    this.imgs = this.fillListImg();
+  changeRoute(route = ``) {
+    this.routes[route].init();
   }
 
   fillListImg() {
-    const levels = getData().levels;
-    const imgs = levels.reduce((r, level) => {
+    const imgs = getData().levels.reduce((r, level) => {
       level.pictures.forEach((img) => {
         r[img.url] = img.type;
       });
@@ -31,8 +49,13 @@ class Application {
     return imgs;
   }
 
+  showIntro() {
+    location.hash = RouteID.INTRO;
+    this.imgs = this.fillListImg();
+  }
+
   showWelcome() {
-    WelcomeScreen.init();
+    location.hash = RouteID.WELCOME;
   }
 
   showRules() {
@@ -45,8 +68,7 @@ class Application {
   }
 
   showGame() {
-    NewGameScreen.initialization();
-    NewGameScreen.init();
+    location.hash = RouteID.GAME;
   }
 
 }

@@ -4,7 +4,7 @@ import Application from '../main';
 import {getData} from '../data';
 
 class StatsScreen {
-  constructor(state = {answers: [], stats: []}) {
+  constructor(state = {answers: [], lives: 0}) {
     this.result = this.fillResults(state);
     this.view = new StatsView(this.result);
   }
@@ -23,7 +23,7 @@ class StatsScreen {
     const bonuses = {};
     const total = state.answers.reduce((r, item) => {
       if (item.correct) {
-        this.checkBonus(item.time, bonuses);
+        this.checkAddBonus(item.time, bonuses);
         return r + getData().rules.correctAnswerPoints;
       } else {
         return r;
@@ -32,14 +32,14 @@ class StatsScreen {
     this.addBonus(bonuses, getData().rules.remainingLifePoints, `heart`, state.lives);
 
     result.total = total;
-    result.bonuses = bonuses;
-    result.stats = state.stats;
     result.points = getData().rules.correctAnswerPoints;
+    result.bonuses = bonuses;
+    result.answers = state.answers;
 
     return result;
   }
 
-  checkBonus(time, bonuses) {
+  checkAddBonus(time, bonuses) {
     const addPoints = getData().rules.addPoints;
     for (let i = 0; i < addPoints.length; i++) {
       if (time <= addPoints[i].time) {
@@ -57,7 +57,7 @@ class StatsScreen {
     }
     if (count !== 0) {
       bonuses[type] = {count, points};
-    } else if (points !== 0) {
+    } else if (points !== 0 && type !== `heart`) {
       if (!bonuses[type]) {
         bonuses[type] = {count: 1, points};
       } else {

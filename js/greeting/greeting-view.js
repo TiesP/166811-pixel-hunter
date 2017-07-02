@@ -26,10 +26,14 @@ export default class GreetingView extends AbstractView {
       .addEventListener(`click`, () => {
         this.onNextScreen();
       });
+    this.element.querySelector(`.greeting__asterisk`)
+      .addEventListener(`click`, () => {
+        this.onStatsScreen();
+      });
   }
 
-  onNextScreen() {
+  onNextScreen() {}
 
-  }
+  onStatsScreen() {}
 
 }
