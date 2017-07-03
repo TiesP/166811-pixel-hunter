@@ -9,9 +9,7 @@ export default class GameView extends AbstractView {
   constructor(props) {
     super(props);
     this.lives = props.lives;
-    // this.timer = props.timer;
     this.level = props.level;
-    // this.stats = props.stats;
   }
 
   get template() {
@@ -20,9 +18,73 @@ export default class GameView extends AbstractView {
       lives: this.lives,
       timer: this.getTime
     })}
-    ${this.getLevelTemplate(this.level)}
+    ${this._getLevelTemplate(this.level)}
     ${footer}
    `;
+  }
+
+  setTime(time) {
+    this.element.querySelector(`.game__timer`).innerText = time;
+  }
+
+  blink() {
+    if (!this._timer) {
+      this._timer = this.element.querySelector(`.game__timer`);
+    }
+    this._timer.style.color = (this._timer.style.color === `red`) ? `black` : `red`;
+  }
+
+  setStats(stats) {
+    this.element.querySelector(`div.stats`).innerHTML = getListStats(stats);
+  }
+
+  _setProportions(item) {
+    const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
+    const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
+    if (item.naturalWidth / item.naturalHeight > width / height) {
+      item.width = width;
+    } else {
+      item.height = height;
+    }
+  }
+
+  _getLevelTemplate(level) {
+    return `
+       <div class="game">
+        <p class="game__task">${getData().types[level.type].title}</p>
+        <form class="game__content ${getData().types[level.type].className}">
+          ${this._getOptionResults(level.pictures, level.type)}
+        </form>
+        <div class="stats">
+        </div>
+      </div>
+     `;
+  }
+
+  _getOptionResults(arr, type) {
+    return arr.reduce((r, item, i) => {
+      return `${r} <div class="game__option" ${(type === `one-of-three`) ? `data-url="${item.url}"` : ``}>
+      <img src=${item.url} alt="Option ${i + 1}">
+      ${this._getLabels(type, i, item.url)}
+      </div>`;
+    }, ``);
+  }
+
+  _getLabels(type, i, urlImg) {
+    if (type === `one-of-three`) {
+      return ``;
+    } else {
+      return `
+      <label class="game__answer  game__answer--photo">
+        <input name="question${i + 1}" type="radio" value="photo" data-url="${urlImg}">
+        <span>Фото</span>
+      </label>
+      <label class="game__answer  game__answer--wide  game__answer--paint">
+        <input name="question${i + 1}" type="radio" value="painting" data-url="${urlImg}">
+        <span>Рисунок</span>
+      </label>
+      `;
+    }
   }
 
   bind() {
@@ -31,21 +93,21 @@ export default class GameView extends AbstractView {
         this.onPrevScreen();
       });
 
-    if (this.level.type === `twoPicture`) {
+    if (this.level.type === `two-of-two`) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
           item.addEventListener(`change`, (event) => {
             this.checkAnswer(item);
           });
         });
-    } else if (this.level.type === `onePicture`) {
+    } else if (this.level.type === `tinder-like`) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
           item.addEventListener(`click`, (event) => {
             this.checkAnswer(item);
           });
         });
-    } else if (this.level.type === `threePicture`) {
+    } else if (this.level.type === `one-of-three`) {
       Array.from(this.element.querySelectorAll(`.game__option`))
         .forEach((item) => {
           item.addEventListener(`mousedown`, (event) => {
@@ -59,71 +121,18 @@ export default class GameView extends AbstractView {
     Array.from(this.element.querySelectorAll(`.game__option img`))
       .forEach((item) => {
         item.addEventListener(`load`, (event) => {
-          this.setProportions(item);
+          this._setProportions(item);
         });
       });
 
-  }
+    const timer = this.element.querySelector(`.game__timer`);
+    timer.style.transitionProperty = `color`;
+    timer.style.transitionDuration = `1s`;
 
-  setTime(time) {
-    this.element.querySelector(`.game__timer`).innerText = time;
-  }
-
-  setStats(stats) {
-    this.element.querySelector(`div.stats`).innerHTML = getListStats(stats);
   }
 
   onPrevScreen() {}
 
   checkAnswer(item) {}
-
-  setProportions(item) {
-    const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
-    const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
-    if (item.naturalWidth / item.naturalHeight > width / height) {
-      item.width = width;
-    } else {
-      item.height = height;
-    }
-  }
-
-  getLevelTemplate(level) {
-    return `
-       <div class="game">
-        <p class="game__task">${getData().types[level.type].title}</p>
-        <form class="game__content ${getData().types[level.type].className}">
-          ${this.getOptionResults(level.pictures, level.type)}
-        </form>
-        <div class="stats">
-        </div>
-      </div>
-     `;
-  }
-
-  getOptionResults(arr, type) {
-    return arr.reduce((r, item, i) => {
-      return `${r} <div class="game__option" ${(type === `threePicture`) ? `data-url="${item.url}"` : ``}>
-      <img src=${item.url} alt="Option ${i + 1}">
-      ${this.getLabels(type, i, item.url)}
-      </div>`;
-    }, ``);
-  }
-
-  getLabels(type, i, urlImg) {
-    if (type === `threePicture`) {
-      return ``;
-    } else {
-      return `
-      <label class="game__answer  game__answer--photo">
-        <input name="question${i + 1}" type="radio" value="photo" data-url="${urlImg}">
-        <span>Фото</span>
-      </label>
-      <label class="game__answer  game__answer--wide  game__answer--paint">
-        <input name="question${i + 1}" type="radio" value="paint" data-url="${urlImg}">
-        <span>Рисунок</span>
-      </label>
-      `;
-    }
-  }
 
 }

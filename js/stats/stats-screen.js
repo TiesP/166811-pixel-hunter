@@ -1,11 +1,12 @@
 import StatsView from './stats-view';
 import {changeView} from '../utils';
-import Application from '../main';
-import {getData} from '../data';
+import Application from '../application';
+import {fillResults} from './stats';
+import {loadResults} from '../api';
 
 class StatsScreen {
   constructor(state = {answers: [], lives: 0}) {
-    this.result = this.fillResults(state);
+    this.result = fillResults(state);
   }
 
   init() {
@@ -14,63 +15,47 @@ class StatsScreen {
       let stateHash = decodeURIComponent(arrHash[1]);
       stateHash = JSON.parse(stateHash);
 
-      this.result = this.fillResults(stateHash);
+      this.result = fillResults(stateHash);
     }
 
-    this.view = new StatsView(this.result);
-    changeView(this.view);
-    this.view.onPrevScreen = () => {
-      Application.showWelcome();
-    };
+    loadResults()
+      .then((data) => {
+        const results = data.map((item) => {
+          return fillResults({
+            lives: item.lives,
+            answers: this._getAnswersFromStats(item.stats)
+          });
+        });
 
+        this.view = new StatsView(this.result, results);
+        changeView(this.view);
+        this.view.onPrevScreen = () => {
+          Application.showWelcome();
+        };
+      })
+      .catch(window.console.error);
   }
 
-  fillResults(state) {
-    const result = {};
-    const bonuses = {};
-    const total = state.answers.reduce((r, item) => {
-      if (item.correct) {
-        this.checkAddBonus(item.time, bonuses);
-        return r + getData().rules.correctAnswerPoints;
-      } else {
-        return r;
-      }
-    }, 0);
-    this.addBonus(bonuses, getData().rules.remainingLifePoints, `heart`, state.lives);
-
-    result.total = total;
-    result.points = getData().rules.correctAnswerPoints;
-    result.bonuses = bonuses;
-    result.answers = state.answers;
-
-    return result;
+  _getAnswersFromStats(stats) {
+    if (!stats) {
+      return [];
+    }
+    return stats.map((item) => {
+      return this._getAnswer(item);
+    });
   }
 
-  checkAddBonus(time, bonuses) {
-    const addPoints = getData().rules.addPoints;
-    for (let i = 0; i < addPoints.length; i++) {
-      if (time <= addPoints[i].time) {
-        let points = addPoints[i].points;
-        this.addBonus(bonuses, points, addPoints[i].type);
-        return points;
-      }
+  _getAnswer(item) {
+    if (item === `fast`) {
+      return {correct: true, time: 9};
+    } else if (item === `correct`) {
+      return {correct: true, time: 20};
+    } else if (item === `wrong`) {
+      return {correct: false, time: 30};
+    } else if (item === `slow`) {
+      return {correct: true, time: 30};
     }
-    return 0;
-  }
-
-  addBonus(bonuses, points, type, count = 0) {
-    if (!bonuses) {
-      return;
-    }
-    if (count !== 0) {
-      bonuses[type] = {count, points};
-    } else if (points !== 0 && type !== `heart`) {
-      if (!bonuses[type]) {
-        bonuses[type] = {count: 1, points};
-      } else {
-        bonuses[type].count++;
-      }
-    }
+    return {correct: false, time: 0};
   }
 
 }

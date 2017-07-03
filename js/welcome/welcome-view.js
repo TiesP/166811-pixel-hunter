@@ -1,7 +1,7 @@
 import AbstractView from '../view';
 import footer from '../components/footer';
 
-export default class GreetingView extends AbstractView {
+export default class WelcomeView extends AbstractView {
 
   get template() {
     return `<div class="greeting central--blur">

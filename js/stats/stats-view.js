@@ -5,9 +5,10 @@ import getListStats from '../components/lineStats';
 import {getStats} from '../stats/stats';
 
 export default class StatsView extends AbstractView {
-  constructor(result) {
+  constructor(result, results) {
     super();
     this.result = result;
+    this.results = results;
   }
 
   get template() {
@@ -15,31 +16,20 @@ export default class StatsView extends AbstractView {
     ${header()}
     <div class="result">
       <h1>${(this.result.total === 0) ? `Поражение` : `Победа`}!</h1>
-      ${this.getResults()}
+      ${this._getResults()}
     </div>
     ${footer}
     `;
   }
 
-  bind() {
-    this.element.querySelector(`.back`)
-      .addEventListener(`click`, () => {
-        this.onPrevScreen();
-      });
-  }
-
-  onPrevScreen() {
-
-  }
-
-  getResults() {
-    const results = [this.result];
+  _getResults() {
+    const results = [].concat(this.result, this.results);
     return results.reduce((r, item, i) => {
-      return r + this.getTableBonuses(item, i);
+      return r + this._getTableBonuses(item, i);
     }, ``);
   }
 
-  getTableBonuses(item, i) {
+  _getTableBonuses(item, i) {
     let tableText;
     if (item.total === 0) {
       tableText = `
@@ -67,9 +57,9 @@ export default class StatsView extends AbstractView {
           <td class="result__points">×&nbsp;${item.points}</td>
           <td class="result__total">${item.total}</td>
         </tr>
-        ${this.getBonuses(item.bonuses)}
+        ${this._getBonuses(item.bonuses)}
         <tr>
-          <td colspan="5" class="result__total  result__total--final">${item.total + this.getSumBonuses(item.bonuses)}</td>
+          <td colspan="5" class="result__total  result__total--final">${item.total + this._getSumBonuses(item.bonuses)}</td>
         </tr>
       </table>
     `;
@@ -77,24 +67,24 @@ export default class StatsView extends AbstractView {
     return tableText;
   }
 
-  getSumBonuses(bonuses) {
+  _getSumBonuses(bonuses) {
     return Object.keys(bonuses).reduce((r, key) => {
       let item = bonuses[key];
       return r + (item.points * item.count);
     }, 0);
   }
 
-  getBonuses(bonuses) {
+  _getBonuses(bonuses) {
     return Object.keys(bonuses).reduce((r, key) => {
-      return r + this.getRowBonus(key, bonuses[key]);
+      return r + this._getRowBonus(key, bonuses[key]);
     }, ``);
   }
 
-  getRowBonus(type, item) {
+  _getRowBonus(type, item) {
     return `
     <tr>
     <td></td>
-    <td class="result__extra">${this.getBonusName(type)}:</td>
+    <td class="result__extra">${this._getBonusName(type)}:</td>
     <td class="result__extra">${item.count}&nbsp;<span class="stats__result stats__result--${type}"></span></td>
     <td class="result__points">×&nbsp;${(type === `slow`) ? -item.points : item.points}</td>
     <td class="result__total">${item.points * item.count}</td>
@@ -102,7 +92,7 @@ export default class StatsView extends AbstractView {
     `;
   }
 
-  getBonusName(type) {
+  _getBonusName(type) {
     if (type === `fast`) {
       return `Бонус за скорость`;
     } else if (type === `heart`) {
@@ -111,6 +101,17 @@ export default class StatsView extends AbstractView {
       return `Штраф за медлительность`;
     }
     return ``;
+  }
+
+  bind() {
+    this.element.querySelector(`.back`)
+      .addEventListener(`click`, () => {
+        this.onPrevScreen();
+      });
+  }
+
+  onPrevScreen() {
+
   }
 
 }
