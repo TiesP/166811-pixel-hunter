@@ -1,6 +1,6 @@
 import RulesView from './rules-view';
 import {changeView} from '../utils';
-import Application from '../main';
+import Application from '../application';
 
 class RulesScreen {
   constructor() {
@@ -20,7 +20,6 @@ class RulesScreen {
 
     this.view.onChangeName = (rulesButton, val) => {
       rulesButton.disabled = !val;
-      Application.setName(val);
     };
   }
 

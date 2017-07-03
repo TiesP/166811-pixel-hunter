@@ -1,8 +1,10 @@
 import GameView from './game-view';
 import {changeView} from '../utils';
-import Application from '../main';
+import Application from '../application';
 import {getData} from '../data';
 import {getStats, fillResults} from '../stats/stats';
+import {saveResults} from '../api';
+import {getState} from '../data';
 
 class GameScreen {
 
@@ -69,6 +71,8 @@ class GameScreen {
     if (this.state.time > timeForLevel) {
       this.changeScreen(false);
       return;
+    } else if (timeForLevel - this.state.time < 6) {
+      this.view.blink();
     }
 
     this.timeout = setTimeout(() => this.tickTimer(), 1000);
@@ -83,7 +87,7 @@ class GameScreen {
     if (this.level.type === `twoPicture`) {
       return this.checkCorrect();
     } else {
-      const type = Application.imgs[item.dataset.url];
+      const type = getState().imgs[item.dataset.url].type;
       if (this.level.type === `threePicture`) {
         return (type === `paint`);
       } else {
@@ -94,7 +98,7 @@ class GameScreen {
 
   answerComplete(item) {
     if (this.level.type === `twoPicture`) {
-      const type = Application.imgs[item.dataset.url];
+      const type = getState().imgs[item.dataset.url].type;
       this.stateModule[item.name] = (type === item.value);
       return (Object.keys(this.stateModule).length === 2);
     } else {
@@ -117,10 +121,12 @@ class GameScreen {
     };
 
     const result = fillResults(stateResult);
-    Application.saveResults({
+    saveResults({
       stats: getStats(result.answers),
       lives: result.lives
-    });
+    })
+      .then((resp) => {})
+      .catch(window.console.error);
 
     Application.showStats(stateResult);
   }
@@ -142,9 +148,6 @@ class GameScreen {
 
   reduceLives(state) {
     let lives = state.lives;
-    // if (!lives) {
-    //   lives = getData().initialState.lives;
-    // }
     if (lives === 0) {
       return state;
     }

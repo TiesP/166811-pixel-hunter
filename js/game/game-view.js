@@ -9,9 +9,7 @@ export default class GameView extends AbstractView {
   constructor(props) {
     super(props);
     this.lives = props.lives;
-    // this.timer = props.timer;
     this.level = props.level;
-    // this.stats = props.stats;
   }
 
   get template() {
@@ -63,10 +61,21 @@ export default class GameView extends AbstractView {
         });
       });
 
+    const timer = this.element.querySelector(`.game__timer`);
+    timer.style.transitionProperty = `color`;
+    timer.style.transitionDuration = `1s`;
+
   }
 
   setTime(time) {
     this.element.querySelector(`.game__timer`).innerText = time;
+  }
+
+  blink() {
+    if (!this._timer) {
+      this._timer = this.element.querySelector(`.game__timer`);
+    }
+    this._timer.style.color = (this._timer.style.color === `red`) ? `black` : `red`;
   }
 
   setStats(stats) {
@@ -125,5 +134,4 @@ export default class GameView extends AbstractView {
       `;
     }
   }
-
 }

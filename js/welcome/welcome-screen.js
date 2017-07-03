@@ -1,10 +1,10 @@
-import GreetingView from './greeting-view';
+import WelcomeView from './welcome-view';
 import {changeView} from '../utils';
-import Application from '../main';
+import Application from '../application';
 
-class GreetingScreen {
+class WelcomeScreen {
   constructor() {
-    this.view = new GreetingView();
+    this.view = new WelcomeView();
   }
 
   init() {
@@ -21,4 +21,4 @@ class GreetingScreen {
 
 }
 
-export default new GreetingScreen();
+export default new WelcomeScreen();

@@ -1,7 +1,8 @@
 import StatsView from './stats-view';
 import {changeView} from '../utils';
-import Application from '../main';
+import Application from '../application';
 import {fillResults} from './stats';
+import {loadResults} from '../api';
 
 class StatsScreen {
   constructor(state = {answers: [], lives: 0}) {
@@ -17,7 +18,7 @@ class StatsScreen {
       this.result = fillResults(stateHash);
     }
 
-    Application.getResults()
+    loadResults()
       .then((data) => {
         const results = data.map((item) => {
           return fillResults({
@@ -31,7 +32,8 @@ class StatsScreen {
         this.view.onPrevScreen = () => {
           Application.showWelcome();
         };
-      });
+      })
+      .catch(window.console.error);
   }
 
   getAnswersFromStats(stats) {
