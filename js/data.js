@@ -1,14 +1,14 @@
 const data = Object.freeze({
   'types': {
-    onePicture: {
+    'tinder-like': {
       title: `Угадай, фото или рисунок?`,
       className: `game__content--wide`
     },
-    twoPicture: {
+    'two-of-two': {
       title: `Угадайте для каждого изображения фото или рисунок?`,
       className: ``
     },
-    threePicture: {
+    'one-of-three': {
       title: `Найдите рисунок среди изображений`,
       className: `game__content--triple`
     }

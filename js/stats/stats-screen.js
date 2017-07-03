@@ -23,7 +23,7 @@ class StatsScreen {
         const results = data.map((item) => {
           return fillResults({
             lives: item.lives,
-            answers: this.getAnswersFromStats(item.stats)
+            answers: this._getAnswersFromStats(item.stats)
           });
         });
 
@@ -36,16 +36,16 @@ class StatsScreen {
       .catch(window.console.error);
   }
 
-  getAnswersFromStats(stats) {
+  _getAnswersFromStats(stats) {
     if (!stats) {
       return [];
     }
     return stats.map((item) => {
-      return this.getAnswer(item);
+      return this._getAnswer(item);
     });
   }
 
-  getAnswer(item) {
+  _getAnswer(item) {
     if (item === `fast`) {
       return {correct: true, time: 9};
     } else if (item === `correct`) {

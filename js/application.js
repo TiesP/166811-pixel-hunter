@@ -24,7 +24,7 @@ class Application {
     loadData()
       .then((data) => {
         return data.map((item) => {
-          return {type: that.getType(item.type), pictures: that.getPictures(item.answers)};
+          return {type: item.type, pictures: that._getPictures(item.answers)};
         });
       })
       .then((levels) => {
@@ -36,45 +36,6 @@ class Application {
       });
   }
 
-  getPictures(answers) {
-    return answers.map((answer) => {
-      return {
-        type: (answer.type === `painting`) ? `paint` : answer.type,
-        url: answer.image.url
-      };
-    });
-  }
-
-  getType(apiType) {
-    if (apiType === `two-of-two`) {
-      return `twoPicture`;
-    } else if (apiType === `tinder-like`) {
-      return `onePicture`;
-    } else if (apiType === `one-of-three`) {
-      return `threePicture`;
-    }
-    return ``;
-  }
-
-  _setup(levels) {
-    this.routes = {
-      [RouteID.WELCOME]: WelcomeScreen,
-      [RouteID.RULES]: RulesScreen,
-      [RouteID.SCOREBOARD]: new StatsScreen(),
-      [RouteID.GAME]: new NewGameScreen(levels)
-    };
-
-    window.addEventListener(`hashchange`, () => {
-      this.changeRoute(location.hash.replace(`#`, ``));
-    });
-
-    this.changeRoute(location.hash.replace(`#`, ``));
-  }
-
-  changeRoute(route = ``) {
-    const arrHash = route.split(`=`, 2);
-    this.routes[arrHash[0]].init();
-  }
 
   showWelcome() {
     location.hash = RouteID.WELCOME;
@@ -91,6 +52,35 @@ class Application {
 
   showGame() {
     location.hash = RouteID.GAME;
+  }
+
+  _getPictures(answers) {
+    return answers.map((answer) => {
+      return {
+        type: answer.type,
+        url: answer.image.url
+      };
+    });
+  }
+
+  _setup(levels) {
+    this.routes = {
+      [RouteID.WELCOME]: WelcomeScreen,
+      [RouteID.RULES]: RulesScreen,
+      [RouteID.SCOREBOARD]: new StatsScreen(),
+      [RouteID.GAME]: new NewGameScreen(levels)
+    };
+
+    window.addEventListener(`hashchange`, () => {
+      this._changeRoute(location.hash.replace(`#`, ``));
+    });
+
+    this._changeRoute(location.hash.replace(`#`, ``));
+  }
+
+  _changeRoute(route = ``) {
+    const arrHash = route.split(`=`, 2);
+    this.routes[arrHash[0]].init();
   }
 
 }
