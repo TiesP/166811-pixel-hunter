@@ -14,9 +14,6 @@ const RouteID = {
 };
 
 class Application {
-  constructor() {
-    this.init();
-  }
 
   init() {
     IntroScreen.init();
