@@ -4,7 +4,7 @@ import Application from '../application';
 import {getData} from '../data';
 import {getStats, fillResults} from '../stats/stats';
 import {saveResults} from '../api';
-import {getState} from '../data';
+import {getState, GameType} from '../data';
 
 class GameScreen {
 
@@ -84,11 +84,11 @@ class GameScreen {
   }
 
   _answerCorrect(item) {
-    if (this.level.type === `two-of-two`) {
+    if (this.level.type === GameType.TWO_OF_TWO) {
       return this._checkCorrect();
     } else {
       const type = getState().imgs[item.dataset.url].type;
-      if (this.level.type === `one-of-three`) {
+      if (this.level.type === GameType.ONE_OF_THREE) {
         return (type === `painting`);
       } else {
         return (type === item.value);
@@ -97,7 +97,7 @@ class GameScreen {
   }
 
   _answerComplete(item) {
-    if (this.level.type === `two-of-two`) {
+    if (this.level.type === GameType.TWO_OF_TWO) {
       const type = getState().imgs[item.dataset.url].type;
       this.stateModule[item.name] = (type === item.value);
       return (Object.keys(this.stateModule).length === 2);

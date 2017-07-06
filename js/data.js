@@ -1,14 +1,20 @@
+export const GameType = {
+  TINDER: `tinder-like`,
+  TWO_OF_TWO: `two-of-two`,
+  ONE_OF_THREE: `one-of-three`
+};
+
 const data = Object.freeze({
   'types': {
-    'tinder-like': {
+    [GameType.TINDER]: {
       title: `Угадай, фото или рисунок?`,
       className: `game__content--wide`
     },
-    'two-of-two': {
+    [GameType.TWO_OF_TWO]: {
       title: `Угадайте для каждого изображения фото или рисунок?`,
       className: ``
     },
-    'one-of-three': {
+    [GameType.ONE_OF_THREE]: {
       title: `Найдите рисунок среди изображений`,
       className: `game__content--triple`
     }

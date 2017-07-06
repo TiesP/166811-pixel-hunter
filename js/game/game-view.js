@@ -2,7 +2,7 @@ import AbstractView from '../view';
 import footer from '../components/footer';
 import header from '../components/header';
 import getListStats from '../components/lineStats';
-import {getData} from '../data';
+import {getData, GameType} from '../data';
 
 export default class GameView extends AbstractView {
 
@@ -63,7 +63,7 @@ export default class GameView extends AbstractView {
 
   _getOptionResults(arr, type) {
     return arr.reduce((r, item, i) => {
-      return `${r} <div class="game__option" ${(type === `one-of-three`) ? `data-url="${item.url}"` : ``}>
+      return `${r} <div class="game__option" ${(type === GameType.ONE_OF_THREE) ? `data-url="${item.url}"` : ``}>
       <img src=${item.url} alt="Option ${i + 1}">
       ${this._getLabels(type, i, item.url)}
       </div>`;
@@ -71,7 +71,7 @@ export default class GameView extends AbstractView {
   }
 
   _getLabels(type, i, urlImg) {
-    if (type === `one-of-three`) {
+    if (type === GameType.ONE_OF_THREE) {
       return ``;
     } else {
       return `
@@ -93,21 +93,21 @@ export default class GameView extends AbstractView {
         this.onPrevScreen();
       });
 
-    if (this.level.type === `two-of-two`) {
+    if (this.level.type === GameType.TWO_OF_TWO) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
           item.addEventListener(`change`, () => {
             this.checkAnswer(item);
           });
         });
-    } else if (this.level.type === `tinder-like`) {
+    } else if (this.level.type === GameType.TINDER) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
           item.addEventListener(`click`, () => {
             this.checkAnswer(item);
           });
         });
-    } else if (this.level.type === `one-of-three`) {
+    } else if (this.level.type === GameType.ONE_OF_THREE) {
       Array.from(this.element.querySelectorAll(`.game__option`))
         .forEach((item) => {
           item.addEventListener(`mousedown`, (event) => {
