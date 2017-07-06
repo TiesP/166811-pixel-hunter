@@ -20,6 +20,6 @@ export function saveResults(data) {
     },
     method: `POST`
   };
-  return fetch(`${SERVER_URL}/stats/id166811`, requestSettings);
+  return fetch(`${SERVER_URL}/stats/${USER_NAME}`, requestSettings);
 
 }

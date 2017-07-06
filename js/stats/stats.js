@@ -56,7 +56,7 @@ function checkAddBonus(time, bonuses) {
   const addPoints = getData().rules.addPoints;
   for (let i = 0; i < addPoints.length; i++) {
     if (time <= addPoints[i].time) {
-      let points = addPoints[i].points;
+      const points = addPoints[i].points;
       addBonus(bonuses, points, addPoints[i].type);
       return points;
     }

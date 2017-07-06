@@ -147,7 +147,7 @@ class GameScreen {
   }
 
   _reduceLives(state) {
-    let lives = state.lives;
+    const lives = state.lives;
     if (lives === 0) {
       return state;
     }
