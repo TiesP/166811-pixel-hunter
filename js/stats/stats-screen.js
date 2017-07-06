@@ -55,16 +55,18 @@ class StatsScreen {
   }
 
   _getAnswer(item) {
-    if (item === StatsType.FAST) {
-      return {correct: true, time: 9};
-    } else if (item === StatsType.CORRECT) {
-      return {correct: true, time: 20};
-    } else if (item === StatsType.WRONG) {
-      return {correct: false, time: 30};
-    } else if (item === StatsType.SLOW) {
-      return {correct: true, time: 30};
+    switch (item) {
+      case StatsType.FAST:
+        return {correct: true, time: 9};
+      case StatsType.CORRECT:
+        return {correct: true, time: 20};
+      case StatsType.WRONG:
+        return {correct: false, time: 30};
+      case StatsType.SLOW:
+        return {correct: true, time: 30};
+      default:
+        return {correct: false, time: 0};
     }
-    return {correct: false, time: 0};
   }
 
 }

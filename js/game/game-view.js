@@ -93,29 +93,33 @@ export default class GameView extends AbstractView {
         this.onPrevScreen();
       });
 
-    if (this.level.type === GameType.TWO_OF_TWO) {
-      Array.from(this.element.querySelectorAll(`.game__option input`))
-        .forEach((item) => {
-          item.addEventListener(`change`, () => {
-            this.checkAnswer(item);
-          });
-        });
-    } else if (this.level.type === GameType.TINDER) {
-      Array.from(this.element.querySelectorAll(`.game__option input`))
-        .forEach((item) => {
-          item.addEventListener(`click`, () => {
-            this.checkAnswer(item);
-          });
-        });
-    } else if (this.level.type === GameType.ONE_OF_THREE) {
-      Array.from(this.element.querySelectorAll(`.game__option`))
-        .forEach((item) => {
-          item.addEventListener(`mousedown`, (event) => {
-            if (event.which === 1) {
+    switch (this.level.type) {
+      case GameType.TWO_OF_TWO:
+        Array.from(this.element.querySelectorAll(`.game__option input`))
+          .forEach((item) => {
+            item.addEventListener(`change`, () => {
               this.checkAnswer(item);
-            }
+            });
           });
-        });
+        break;
+      case GameType.TINDER:
+        Array.from(this.element.querySelectorAll(`.game__option input`))
+          .forEach((item) => {
+            item.addEventListener(`click`, () => {
+              this.checkAnswer(item);
+            });
+          });
+        break;
+      case GameType.ONE_OF_THREE:
+        Array.from(this.element.querySelectorAll(`.game__option`))
+          .forEach((item) => {
+            item.addEventListener(`mousedown`, (event) => {
+              if (event.which === 1) {
+                this.checkAnswer(item);
+              }
+            });
+          });
+        break;
     }
 
     Array.from(this.element.querySelectorAll(`.game__option img`))
