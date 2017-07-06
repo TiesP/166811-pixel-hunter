@@ -1,4 +1,4 @@
-import {getData} from '../data';
+import {getData, StatsType} from '../data';
 
 export function getStats(answers, maxCount = 0) {
   if (!answers) {
@@ -10,7 +10,7 @@ export function getStats(answers, maxCount = 0) {
   }, []);
 
   for (let i = stats.length; i < maxCount; i++) {
-    stats.push(`unknown`);
+    stats.push(StatsType.UNKNOWN);
   }
 
   return stats;
@@ -19,15 +19,15 @@ export function getStats(answers, maxCount = 0) {
 
 export function getStat(correct, time) {
   if (!correct) {
-    return `wrong`;
+    return StatsType.WRONG;
   }
   const addPoints = getData().rules.addPoints;
-  for (let i = 0; i < addPoints.length; i++) {
-    if (time <= addPoints[i].time) {
-      return addPoints[i].type;
+  for (let rulePoints of addPoints) {
+    if (time <= rulePoints.time) {
+      return rulePoints.type;
     }
   }
-  return `unknown`;
+  return StatsType.UNKNOWN;
 }
 
 export function fillResults(state) {
@@ -41,7 +41,7 @@ export function fillResults(state) {
       return r;
     }
   }, 0);
-  addBonus(bonuses, getData().rules.remainingLifePoints, `heart`, state.lives);
+  addBonus(bonuses, getData().rules.remainingLifePoints, StatsType.HEART, state.lives);
 
   result.total = total;
   result.points = getData().rules.correctAnswerPoints;
@@ -54,10 +54,10 @@ export function fillResults(state) {
 
 function checkAddBonus(time, bonuses) {
   const addPoints = getData().rules.addPoints;
-  for (let i = 0; i < addPoints.length; i++) {
-    if (time <= addPoints[i].time) {
-      let points = addPoints[i].points;
-      addBonus(bonuses, points, addPoints[i].type);
+  for (let rulePoints of addPoints) {
+    if (time <= rulePoints.time) {
+      const points = rulePoints.points;
+      addBonus(bonuses, points, rulePoints.type);
       return points;
     }
   }
@@ -70,7 +70,7 @@ function addBonus(bonuses, points, type, count = 0) {
   }
   if (count !== 0) {
     bonuses[type] = {count, points};
-  } else if (points !== 0 && type !== `heart`) {
+  } else if (points !== 0 && type !== StatsType.HEART) {
     if (!bonuses[type]) {
       bonuses[type] = {count: 1, points};
     } else {

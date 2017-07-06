@@ -3,6 +3,7 @@ import {changeView} from '../utils';
 import Application from '../application';
 import {fillResults} from './stats';
 import {loadResults} from '../api';
+import {StatsType} from '../data';
 
 class StatsScreen {
   constructor(state = {answers: [], lives: 0}) {
@@ -19,11 +20,19 @@ class StatsScreen {
     }
 
     loadResults()
+      .then((resp) => {
+        if (resp.status === 404) {
+          // пока нет результатов для данного игрока
+          return [{lives: 0, stats: []}];
+        } else {
+          return resp.json();
+        }
+      })
       .then((data) => {
         const results = data.map((item) => {
           return fillResults({
             lives: item.lives,
-            answers: this._getAnswersFromStats(item.stats)
+            answers: getAnswersFromStats(item.stats)
           });
         });
 
@@ -36,28 +45,30 @@ class StatsScreen {
       .catch(window.console.error);
   }
 
-  _getAnswersFromStats(stats) {
-    if (!stats) {
-      return [];
-    }
-    return stats.map((item) => {
-      return this._getAnswer(item);
-    });
-  }
+}
 
-  _getAnswer(item) {
-    if (item === `fast`) {
+function getAnswersFromStats(stats) {
+  if (!stats) {
+    return [];
+  }
+  return stats.map((item) => {
+    return getAnswer(item);
+  });
+}
+
+function getAnswer(item) {
+  switch (item) {
+    case StatsType.FAST:
       return {correct: true, time: 9};
-    } else if (item === `correct`) {
+    case StatsType.CORRECT:
       return {correct: true, time: 20};
-    } else if (item === `wrong`) {
+    case StatsType.WRONG:
       return {correct: false, time: 30};
-    } else if (item === `slow`) {
+    case StatsType.SLOW:
       return {correct: true, time: 30};
-    }
-    return {correct: false, time: 0};
+    default:
+      return {correct: false, time: 0};
   }
-
 }
 
 export default StatsScreen;

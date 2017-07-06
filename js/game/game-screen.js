@@ -1,10 +1,9 @@
 import GameView from './game-view';
 import {changeView} from '../utils';
 import Application from '../application';
-import {getData} from '../data';
 import {getStats, fillResults} from '../stats/stats';
 import {saveResults} from '../api';
-import {getState} from '../data';
+import {getState, GameType, getData} from '../data';
 
 class GameScreen {
 
@@ -15,9 +14,8 @@ class GameScreen {
   }
 
   init() {
-    this.state = this._setState(getData().initialState);
+    this.state = setState(getData().initialState);
     this.answers = [];
-
     this._update();
   }
 
@@ -50,10 +48,10 @@ class GameScreen {
   }
 
   _changeScreen(correct) {
-    this.answers = this._addAnswer(this.answers, this.state.time, correct);
+    this.answers = addAnswer(this.answers, this.state.time, correct);
     this._stopTimer();
     if (!correct) {
-      this.state = this._reduceLives(this.state);
+      this.state = reduceLives(this.state);
       if (this.state.lives === 0) {
         this._showStats();
         return;
@@ -67,7 +65,7 @@ class GameScreen {
 
     const timeForLevel = getData().rules.timer;
     this.view.setTime(timeForLevel - this.state.time);
-    this.state = this._changeState(this.state, `time`, this.state.time + 1);
+    this.state = changeState(this.state, `time`, this.state.time + 1);
     if (this.state.time > timeForLevel) {
       this._changeScreen(false);
       return;
@@ -80,16 +78,17 @@ class GameScreen {
 
   _stopTimer() {
     clearTimeout(this.timeout);
-    this.state = this._changeState(this.state, `time`, 0);
+    this.state = changeState(this.state, `time`, 0);
   }
 
   _answerCorrect(item) {
-    if (this.level.type === `two-of-two`) {
+    if (this.level.type === GameType.TWO_OF_TWO) {
       return this._checkCorrect();
     } else {
       const type = getState().imgs[item.dataset.url].type;
-      if (this.level.type === `one-of-three`) {
-        return (type === `painting`);
+      if (this.level.type === GameType.ONE_OF_THREE) {
+        const typeQuestion = getData().types[this.level.type].question[this.level.question];
+        return (type === typeQuestion);
       } else {
         return (type === item.value);
       }
@@ -97,7 +96,7 @@ class GameScreen {
   }
 
   _answerComplete(item) {
-    if (this.level.type === `two-of-two`) {
+    if (this.level.type === GameType.TWO_OF_TWO) {
       const type = getState().imgs[item.dataset.url].type;
       this.stateModule[item.name] = (type === item.value);
       return (Object.keys(this.stateModule).length === 2);
@@ -120,13 +119,15 @@ class GameScreen {
       lives: this.state.lives
     };
 
-    const result = fillResults(stateResult);
-    saveResults({
-      stats: getStats(result.answers),
-      lives: result.lives
-    })
-      .then((resp) => {})
-      .catch(window.console.error);
+    if (this.answers.length > 0) {
+      const result = fillResults(stateResult);
+      saveResults({
+        stats: getStats(result.answers),
+        lives: result.lives
+      })
+        .then(() => {})
+        .catch(window.console.error);
+    }
 
     Application.showStats(stateResult);
   }
@@ -143,41 +144,41 @@ class GameScreen {
     }
     curLevel = curLevel + 1;
     this.level = this.levels[curLevel];
-    return this._changeState(state, `curLevel`, curLevel);
-  }
-
-  _reduceLives(state) {
-    let lives = state.lives;
-    if (lives === 0) {
-      return state;
-    }
-    return this._changeState(state, `lives`, lives - 1);
-  }
-
-  _setState(newValue) {
-    return Object.assign({}, newValue);
-  }
-
-  _changeState(state, key, value) {
-    state = Object.assign({}, state);
-    state[key] = value;
-    return state;
-  }
-
-  _addAnswer(answers = [], time, correct) {
-    return answers.concat({time, correct});
+    return changeState(state, `curLevel`, curLevel);
   }
 
   _checkCorrect() {
     const keys = Object.keys(this.stateModule);
-    for (let i = 0; i < keys.length; i++) {
-      if (!this.stateModule[keys[i]]) {
+    for (let curKey of keys) {
+      if (!this.stateModule[curKey]) {
         return false;
       }
     }
     return true;
   }
 
+}
+
+function reduceLives(state) {
+  const lives = state.lives;
+  if (lives === 0) {
+    return state;
+  }
+  return changeState(state, `lives`, lives - 1);
+}
+
+function setState(newValue) {
+  return Object.assign({}, newValue);
+}
+
+function changeState(state, key, value) {
+  state = Object.assign({}, state);
+  state[key] = value;
+  return state;
+}
+
+function addAnswer(answers = [], time, correct) {
+  return answers.concat({time, correct});
 }
 
 export default GameScreen;

@@ -1,15 +1,31 @@
+export const GameType = {
+  TINDER: `tinder-like`,
+  TWO_OF_TWO: `two-of-two`,
+  ONE_OF_THREE: `one-of-three`
+};
+
+export const StatsType = {
+  FAST: `fast`,
+  CORRECT: `correct`,
+  WRONG: `wrong`,
+  SLOW: `slow`,
+  HEART: `heart`,
+  UNKNOWN: `unknown`
+};
+
 const data = Object.freeze({
   'types': {
-    'tinder-like': {
-      title: `Угадай, фото или рисунок?`,
+    [GameType.TINDER]: {
       className: `game__content--wide`
     },
-    'two-of-two': {
-      title: `Угадайте для каждого изображения фото или рисунок?`,
+    [GameType.TWO_OF_TWO]: {
       className: ``
     },
-    'one-of-three': {
-      title: `Найдите рисунок среди изображений`,
+    [GameType.ONE_OF_THREE]: {
+      question: {
+        'Найдите рисунок среди изображений': `painting`,
+        'Найдите фото среди изображений': `photo`
+      },
       className: `game__content--triple`
     }
   },
@@ -21,9 +37,9 @@ const data = Object.freeze({
   'rules': {
     correctAnswerPoints: 100,
     addPoints: [
-      {time: 9, points: 50, type: `fast`},
-      {time: 20, points: 0, type: `correct`},
-      {time: 30, points: -50, type: `slow`}
+      {time: 9, points: 50, type: StatsType.FAST},
+      {time: 20, points: 0, type: StatsType.CORRECT},
+      {time: 30, points: -50, type: StatsType.SLOW}
     ],
     remainingLifePoints: 50,
     timer: 30
