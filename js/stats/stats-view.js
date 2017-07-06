@@ -16,17 +16,35 @@ export default class StatsView extends AbstractView {
     return `
     ${header()}
     <div class="result">
-      <h1>${(this.result.total === 0) ? `Поражение` : `Победа`}!</h1>
+      <h1>${this.title}</h1>
       ${this._getResults()}
     </div>
     ${footer}
     `;
   }
 
+  get title() {
+    if (this.result.total === 0) {
+      if (this.result.answers.length === 0) {
+        return ``;
+      } else {
+        return `Победа!`;
+      }
+    } else {
+      return `Победа!`;
+    }
+  }
+
   _getResults() {
     const results = [].concat(this.result, this.results);
-    return results.reduce((r, item, i) => {
-      return r + getTableBonuses(item, i);
+    let index = 0;
+    return results.reduce((r, item) => {
+      if (item.answers.length === 0) {
+        return r + ``;
+      } else {
+        index++;
+        return r + getTableBonuses(item, index);
+      }
     }, ``);
   }
 
@@ -43,13 +61,13 @@ export default class StatsView extends AbstractView {
 
 }
 
-function getTableBonuses(item, i) {
+function getTableBonuses(item, index) {
   let tableText;
   if (item.total === 0) {
     tableText = `
     <table class="result__table">
       <tr>
-        <td class="result__number">${i + 1}.</td>
+        <td class="result__number">${index}.</td>
         <td>
         <div class="stats">
           ${getListStats(getStats(item.answers))}
@@ -64,7 +82,7 @@ function getTableBonuses(item, i) {
     tableText = `
     <table class="result__table">
       <tr>
-        <td class="result__number">${i + 1}.</td>
+        <td class="result__number">${index}.</td>
         <td colspan="2">
           ${getListStats(getStats(item.answers))}
         </td>

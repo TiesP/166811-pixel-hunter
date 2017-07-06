@@ -119,13 +119,15 @@ class GameScreen {
       lives: this.state.lives
     };
 
-    const result = fillResults(stateResult);
-    saveResults({
-      stats: getStats(result.answers),
-      lives: result.lives
-    })
-      .then(() => {})
-      .catch(window.console.error);
+    if (this.answers.length > 0) {
+      const result = fillResults(stateResult);
+      saveResults({
+        stats: getStats(result.answers),
+        lives: result.lives
+      })
+        .then(() => {})
+        .catch(window.console.error);
+    }
 
     Application.showStats(stateResult);
   }
