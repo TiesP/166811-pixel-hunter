@@ -3,6 +3,7 @@ import footer from '../components/footer';
 import header from '../components/header';
 import getListStats from '../components/lineStats';
 import {getStats} from '../stats/stats';
+import {StatsType} from '../data';
 
 export default class StatsView extends AbstractView {
   constructor(result, results) {
@@ -86,18 +87,18 @@ export default class StatsView extends AbstractView {
     <td></td>
     <td class="result__extra">${this._getBonusName(type)}:</td>
     <td class="result__extra">${item.count}&nbsp;<span class="stats__result stats__result--${type}"></span></td>
-    <td class="result__points">×&nbsp;${(type === `slow`) ? -item.points : item.points}</td>
+    <td class="result__points">×&nbsp;${(type === StatsType.SLOW) ? -item.points : item.points}</td>
     <td class="result__total">${item.points * item.count}</td>
     </tr>
     `;
   }
 
   _getBonusName(type) {
-    if (type === `fast`) {
+    if (type === StatsType.FAST) {
       return `Бонус за скорость`;
-    } else if (type === `heart`) {
+    } else if (type === StatsType.HEART) {
       return `Бонус за жизни`;
-    } else if (type === `slow`) {
+    } else if (type === StatsType.SLOW) {
       return `Штраф за медлительность`;
     }
     return ``;

@@ -3,6 +3,7 @@ import {changeView} from '../utils';
 import Application from '../application';
 import {fillResults} from './stats';
 import {loadResults} from '../api';
+import {StatsType} from '../data';
 
 class StatsScreen {
   constructor(state = {answers: [], lives: 0}) {
@@ -54,13 +55,13 @@ class StatsScreen {
   }
 
   _getAnswer(item) {
-    if (item === `fast`) {
+    if (item === StatsType.FAST) {
       return {correct: true, time: 9};
-    } else if (item === `correct`) {
+    } else if (item === StatsType.CORRECT) {
       return {correct: true, time: 20};
-    } else if (item === `wrong`) {
+    } else if (item === StatsType.WRONG) {
       return {correct: false, time: 30};
-    } else if (item === `slow`) {
+    } else if (item === StatsType.SLOW) {
       return {correct: true, time: 30};
     }
     return {correct: false, time: 0};
