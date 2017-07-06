@@ -22,9 +22,9 @@ export function getStat(correct, time) {
     return StatsType.WRONG;
   }
   const addPoints = getData().rules.addPoints;
-  for (let i = 0; i < addPoints.length; i++) {
-    if (time <= addPoints[i].time) {
-      return addPoints[i].type;
+  for (let rulePoints of addPoints) {
+    if (time <= rulePoints.time) {
+      return rulePoints.type;
     }
   }
   return StatsType.UNKNOWN;
@@ -54,10 +54,10 @@ export function fillResults(state) {
 
 function checkAddBonus(time, bonuses) {
   const addPoints = getData().rules.addPoints;
-  for (let i = 0; i < addPoints.length; i++) {
-    if (time <= addPoints[i].time) {
-      const points = addPoints[i].points;
-      addBonus(bonuses, points, addPoints[i].type);
+  for (let rulePoints of addPoints) {
+    if (time <= rulePoints.time) {
+      const points = rulePoints.points;
+      addBonus(bonuses, points, rulePoints.type);
       return points;
     }
   }

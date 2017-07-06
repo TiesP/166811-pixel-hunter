@@ -170,8 +170,8 @@ class GameScreen {
 
   _checkCorrect() {
     const keys = Object.keys(this.stateModule);
-    for (let i = 0; i < keys.length; i++) {
-      if (!this.stateModule[keys[i]]) {
+    for (let curKey of keys) {
+      if (!this.stateModule[curKey]) {
         return false;
       }
     }
