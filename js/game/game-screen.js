@@ -15,9 +15,8 @@ class GameScreen {
   }
 
   init() {
-    this.state = this._setState(getData().initialState);
+    this.state = setState(getData().initialState);
     this.answers = [];
-
     this._update();
   }
 
@@ -50,10 +49,10 @@ class GameScreen {
   }
 
   _changeScreen(correct) {
-    this.answers = this._addAnswer(this.answers, this.state.time, correct);
+    this.answers = addAnswer(this.answers, this.state.time, correct);
     this._stopTimer();
     if (!correct) {
-      this.state = this._reduceLives(this.state);
+      this.state = reduceLives(this.state);
       if (this.state.lives === 0) {
         this._showStats();
         return;
@@ -67,7 +66,7 @@ class GameScreen {
 
     const timeForLevel = getData().rules.timer;
     this.view.setTime(timeForLevel - this.state.time);
-    this.state = this._changeState(this.state, `time`, this.state.time + 1);
+    this.state = changeState(this.state, `time`, this.state.time + 1);
     if (this.state.time > timeForLevel) {
       this._changeScreen(false);
       return;
@@ -80,7 +79,7 @@ class GameScreen {
 
   _stopTimer() {
     clearTimeout(this.timeout);
-    this.state = this._changeState(this.state, `time`, 0);
+    this.state = changeState(this.state, `time`, 0);
   }
 
   _answerCorrect(item) {
@@ -143,29 +142,7 @@ class GameScreen {
     }
     curLevel = curLevel + 1;
     this.level = this.levels[curLevel];
-    return this._changeState(state, `curLevel`, curLevel);
-  }
-
-  _reduceLives(state) {
-    const lives = state.lives;
-    if (lives === 0) {
-      return state;
-    }
-    return this._changeState(state, `lives`, lives - 1);
-  }
-
-  _setState(newValue) {
-    return Object.assign({}, newValue);
-  }
-
-  _changeState(state, key, value) {
-    state = Object.assign({}, state);
-    state[key] = value;
-    return state;
-  }
-
-  _addAnswer(answers = [], time, correct) {
-    return answers.concat({time, correct});
+    return changeState(state, `curLevel`, curLevel);
   }
 
   _checkCorrect() {
@@ -178,6 +155,28 @@ class GameScreen {
     return true;
   }
 
+}
+
+function reduceLives(state) {
+  const lives = state.lives;
+  if (lives === 0) {
+    return state;
+  }
+  return changeState(state, `lives`, lives - 1);
+}
+
+function setState(newValue) {
+  return Object.assign({}, newValue);
+}
+
+function changeState(state, key, value) {
+  state = Object.assign({}, state);
+  state[key] = value;
+  return state;
+}
+
+function addAnswer(answers = [], time, correct) {
+  return answers.concat({time, correct});
 }
 
 export default GameScreen;

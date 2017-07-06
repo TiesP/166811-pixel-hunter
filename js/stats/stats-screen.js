@@ -32,7 +32,7 @@ class StatsScreen {
         const results = data.map((item) => {
           return fillResults({
             lives: item.lives,
-            answers: this._getAnswersFromStats(item.stats)
+            answers: getAnswersFromStats(item.stats)
           });
         });
 
@@ -45,30 +45,30 @@ class StatsScreen {
       .catch(window.console.error);
   }
 
-  _getAnswersFromStats(stats) {
-    if (!stats) {
-      return [];
-    }
-    return stats.map((item) => {
-      return this._getAnswer(item);
-    });
-  }
+}
 
-  _getAnswer(item) {
-    switch (item) {
-      case StatsType.FAST:
-        return {correct: true, time: 9};
-      case StatsType.CORRECT:
-        return {correct: true, time: 20};
-      case StatsType.WRONG:
-        return {correct: false, time: 30};
-      case StatsType.SLOW:
-        return {correct: true, time: 30};
-      default:
-        return {correct: false, time: 0};
-    }
+function getAnswersFromStats(stats) {
+  if (!stats) {
+    return [];
   }
+  return stats.map((item) => {
+    return getAnswer(item);
+  });
+}
 
+function getAnswer(item) {
+  switch (item) {
+    case StatsType.FAST:
+      return {correct: true, time: 9};
+    case StatsType.CORRECT:
+      return {correct: true, time: 20};
+    case StatsType.WRONG:
+      return {correct: false, time: 30};
+    case StatsType.SLOW:
+      return {correct: true, time: 30};
+    default:
+      return {correct: false, time: 0};
+  }
 }
 
 export default StatsScreen;

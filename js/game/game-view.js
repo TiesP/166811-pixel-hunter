@@ -18,7 +18,7 @@ export default class GameView extends AbstractView {
       lives: this.lives,
       timer: this.getTime
     })}
-    ${this._getLevelTemplate(this.level)}
+    ${getLevelTemplate(this.level)}
     ${footer}
    `;
   }
@@ -36,55 +36,6 @@ export default class GameView extends AbstractView {
 
   setStats(stats) {
     this.element.querySelector(`div.stats`).innerHTML = getListStats(stats);
-  }
-
-  _setProportions(item) {
-    const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
-    const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
-    if (item.naturalWidth / item.naturalHeight > width / height) {
-      item.width = width;
-    } else {
-      item.height = height;
-    }
-  }
-
-  _getLevelTemplate(level) {
-    return `
-       <div class="game">
-        <p class="game__task">${getData().types[level.type].title}</p>
-        <form class="game__content ${getData().types[level.type].className}">
-          ${this._getOptionResults(level.pictures, level.type)}
-        </form>
-        <div class="stats">
-        </div>
-      </div>
-     `;
-  }
-
-  _getOptionResults(arr, type) {
-    return arr.reduce((r, item, i) => {
-      return `${r} <div class="game__option" ${(type === GameType.ONE_OF_THREE) ? `data-url="${item.url}"` : ``}>
-      <img src=${item.url} alt="Option ${i + 1}">
-      ${this._getLabels(type, i, item.url)}
-      </div>`;
-    }, ``);
-  }
-
-  _getLabels(type, i, urlImg) {
-    if (type === GameType.ONE_OF_THREE) {
-      return ``;
-    } else {
-      return `
-      <label class="game__answer  game__answer--photo">
-        <input name="question${i + 1}" type="radio" value="photo" data-url="${urlImg}">
-        <span>Фото</span>
-      </label>
-      <label class="game__answer  game__answer--wide  game__answer--paint">
-        <input name="question${i + 1}" type="radio" value="painting" data-url="${urlImg}">
-        <span>Рисунок</span>
-      </label>
-      `;
-    }
   }
 
   bind() {
@@ -125,7 +76,7 @@ export default class GameView extends AbstractView {
     Array.from(this.element.querySelectorAll(`.game__option img`))
       .forEach((item) => {
         item.addEventListener(`load`, () => {
-          this._setProportions(item);
+          setProportions(item);
         });
       });
 
@@ -139,4 +90,53 @@ export default class GameView extends AbstractView {
 
   checkAnswer(item) {}
 
+}
+
+function getLevelTemplate(level) {
+  return `
+     <div class="game">
+      <p class="game__task">${getData().types[level.type].title}</p>
+      <form class="game__content ${getData().types[level.type].className}">
+        ${getOptionResults(level.pictures, level.type)}
+      </form>
+      <div class="stats">
+      </div>
+    </div>
+   `;
+}
+
+function getOptionResults(arr, type) {
+  return arr.reduce((r, item, i) => {
+    return `${r} <div class="game__option" ${(type === GameType.ONE_OF_THREE) ? `data-url="${item.url}"` : ``}>
+    <img src=${item.url} alt="Option ${i + 1}">
+    ${getLabels(type, i, item.url)}
+    </div>`;
+  }, ``);
+}
+
+function getLabels(type, i, urlImg) {
+  if (type === GameType.ONE_OF_THREE) {
+    return ``;
+  } else {
+    return `
+    <label class="game__answer  game__answer--photo">
+      <input name="question${i + 1}" type="radio" value="photo" data-url="${urlImg}">
+      <span>Фото</span>
+    </label>
+    <label class="game__answer  game__answer--wide  game__answer--paint">
+      <input name="question${i + 1}" type="radio" value="painting" data-url="${urlImg}">
+      <span>Рисунок</span>
+    </label>
+    `;
+  }
+}
+
+function setProportions(item) {
+  const width = parseInt(getComputedStyle(item.parentNode, ``).width, 10);
+  const height = parseInt(getComputedStyle(item.parentNode, ``).height, 10);
+  if (item.naturalWidth / item.naturalHeight > width / height) {
+    item.width = width;
+  } else {
+    item.height = height;
+  }
 }
