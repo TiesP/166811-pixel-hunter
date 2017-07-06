@@ -125,7 +125,7 @@ class GameScreen {
       stats: getStats(result.answers),
       lives: result.lives
     })
-      .then((resp) => {})
+      .then(() => {})
       .catch(window.console.error);
 
     Application.showStats(stateResult);

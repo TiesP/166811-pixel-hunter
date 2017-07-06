@@ -96,14 +96,14 @@ export default class GameView extends AbstractView {
     if (this.level.type === `two-of-two`) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
-          item.addEventListener(`change`, (event) => {
+          item.addEventListener(`change`, () => {
             this.checkAnswer(item);
           });
         });
     } else if (this.level.type === `tinder-like`) {
       Array.from(this.element.querySelectorAll(`.game__option input`))
         .forEach((item) => {
-          item.addEventListener(`click`, (event) => {
+          item.addEventListener(`click`, () => {
             this.checkAnswer(item);
           });
         });
@@ -120,7 +120,7 @@ export default class GameView extends AbstractView {
 
     Array.from(this.element.querySelectorAll(`.game__option img`))
       .forEach((item) => {
-        item.addEventListener(`load`, (event) => {
+        item.addEventListener(`load`, () => {
           this._setProportions(item);
         });
       });
