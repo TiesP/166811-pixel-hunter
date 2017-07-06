@@ -19,6 +19,14 @@ class StatsScreen {
     }
 
     loadResults()
+      .then((resp) => {
+        if (resp.status === 404) {
+          // пока нет результатов для данного игрока
+          return [{lives: 0, stats: []}];
+        } else {
+          return resp.json();
+        }
+      })
       .then((data) => {
         const results = data.map((item) => {
           return fillResults({

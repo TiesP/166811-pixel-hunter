@@ -1,4 +1,5 @@
 const SERVER_URL = `https://intensive-ecmascript-server-btfgudlkpi.now.sh/pixel-hunter`;
+const USER_NAME = `id166811`;
 
 export function loadData() {
   return fetch(`${SERVER_URL}/questions`)
@@ -7,11 +8,8 @@ export function loadData() {
     });
 }
 
-export function loadResults() {
-  return fetch(`${SERVER_URL}/stats/id166811`)
-    .then((resp) => {
-      return resp.json();
-    });
+export function loadResults(userName = USER_NAME) {
+  return fetch(`${SERVER_URL}/stats/${userName}`);
 }
 
 export function saveResults(data) {
