@@ -21,7 +21,7 @@ class Application {
     loadData()
       .then((data) => {
         return data.map((item) => {
-          return {type: item.type, pictures: that._getPictures(item.answers)};
+          return {question: item.question, type: item.type, pictures: that._getPictures(item.answers)};
         });
       })
       .then((levels) => {

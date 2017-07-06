@@ -16,15 +16,16 @@ export const StatsType = {
 const data = Object.freeze({
   'types': {
     [GameType.TINDER]: {
-      title: `Угадай, фото или рисунок?`,
       className: `game__content--wide`
     },
     [GameType.TWO_OF_TWO]: {
-      title: `Угадайте для каждого изображения фото или рисунок?`,
       className: ``
     },
     [GameType.ONE_OF_THREE]: {
-      title: `Найдите рисунок среди изображений`,
+      question: {
+        'Найдите рисунок среди изображений': `painting`,
+        'Найдите фото среди изображений': `photo`
+      },
       className: `game__content--triple`
     }
   },

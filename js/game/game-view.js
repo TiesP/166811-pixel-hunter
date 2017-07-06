@@ -95,7 +95,7 @@ export default class GameView extends AbstractView {
 function getLevelTemplate(level) {
   return `
      <div class="game">
-      <p class="game__task">${getData().types[level.type].title}</p>
+      <p class="game__task">${level.question}</p>
       <form class="game__content ${getData().types[level.type].className}">
         ${getOptionResults(level.pictures, level.type)}
       </form>

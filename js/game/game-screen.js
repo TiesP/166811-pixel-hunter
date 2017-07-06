@@ -1,10 +1,9 @@
 import GameView from './game-view';
 import {changeView} from '../utils';
 import Application from '../application';
-import {getData} from '../data';
 import {getStats, fillResults} from '../stats/stats';
 import {saveResults} from '../api';
-import {getState, GameType} from '../data';
+import {getState, GameType, getData} from '../data';
 
 class GameScreen {
 
@@ -88,7 +87,8 @@ class GameScreen {
     } else {
       const type = getState().imgs[item.dataset.url].type;
       if (this.level.type === GameType.ONE_OF_THREE) {
-        return (type === `painting`);
+        const typeQuestion = getData().types[this.level.type].question[this.level.question];
+        return (type === typeQuestion);
       } else {
         return (type === item.value);
       }
